@@ -1,5 +1,5 @@
 
-#include "SlapKnight_Legacy/Map/BaseTile.h"
+#include "SlapKnight_Legacy/Map/Tiles/BaseTile.h"
 #include "Components/StaticMeshComponent.h"
 
 ABaseTile::ABaseTile()
