@@ -5,6 +5,7 @@
 #include "BaseTile.generated.h"
 
 class UStaticMeshComponent;
+class USceneComponent;
 UCLASS()
 class SLAPKNIGHT_LEGACY_API ABaseTile : public AActor
 {
@@ -19,5 +20,12 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* Mesh;
+	UPROPERTY(EditAnywhere)
+	USceneComponent* TargetToMove;
 	
+public:
+	UPROPERTY(EditAnywhere)
+		FVector pos;
+	UPROPERTY(EditAnywhere)
+	int tileId;
 };

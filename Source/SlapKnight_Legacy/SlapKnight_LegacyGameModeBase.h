@@ -6,12 +6,15 @@
 #include "GameFramework/GameModeBase.h"
 #include "SlapKnight_LegacyGameModeBase.generated.h"
 
-/**
- * 
- */
+class UTileManager;
+
 UCLASS()
 class SLAPKNIGHT_LEGACY_API ASlapKnight_LegacyGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+
+
+
+
 };
