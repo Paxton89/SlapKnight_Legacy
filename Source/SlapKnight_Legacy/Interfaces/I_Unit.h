@@ -15,7 +15,5 @@ class SLAPKNIGHT_LEGACY_API II_Unit
 {
 	GENERATED_BODY()
 public:
-	UFUNCTION()
-    virtual void MoveForward() = 0;
 
 };

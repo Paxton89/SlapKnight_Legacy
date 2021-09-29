@@ -8,7 +8,8 @@
 #include "BaseUnit.generated.h"
 
 class USkeletalMeshComponent;
-
+class USceneComponent;
+class ABaseTile;
 UCLASS()
 class SLAPKNIGHT_LEGACY_API ABaseUnit : public APawn, public II_Unit
 {
@@ -19,13 +20,28 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	int CurrentHealth;
+	int CurrentStamina;
+	
+	void NewRoundReset();
+	void Die();
+	void CenterOnTile();
+	void MoveToTile(ABaseTile* TargetTile);
 	
 protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere)
+	USceneComponent* Root;
+	UPROPERTY(EditAnywhere)
 	USkeletalMeshComponent* SkeletalMesh;
 
-	UFUNCTION()
-    virtual void MoveForward() override;
+	UPROPERTY(EditAnywhere)
+	int StaminaMax;
+	UPROPERTY(EditAnywhere)
+	int HealthMax;
+	UPROPERTY(EditAnywhere)
+	int DamagePower;
+	
+	TArray<AActor*> IgnoreList;
 };
