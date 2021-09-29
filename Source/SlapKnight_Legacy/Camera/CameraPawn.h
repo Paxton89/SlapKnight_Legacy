@@ -7,9 +7,8 @@
 #include "CameraPawn.generated.h"
 
 class UCameraComponent;
-class ABaseTile;
 class USceneComponent;
-class ASlapKnight_LegacyGameModeBase;
+class ABaseTile;
 UCLASS()
 class SLAPKNIGHT_LEGACY_API ACameraPawn : public APawn
 {
@@ -23,21 +22,18 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	//UCameraComponent* MainCam;
+	UCameraComponent* MainCam;
 	USceneComponent* Root;
 
-	ABaseTile* HitTile;
-	
 	UPROPERTY(EditAnywhere)
 	float MoveSpeed;
+	
 	float MoveX;
 	float MoveY;
 	TArray<AActor*> IgnoreList;
+	ABaseTile* HitTile;
 	
-	ASlapKnight_LegacyGameModeBase* gameMode;
-
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 	void LeftClick();
-	void Rotate(float Value);
 };
