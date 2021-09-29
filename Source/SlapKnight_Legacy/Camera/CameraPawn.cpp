@@ -71,20 +71,18 @@ void ACameraPawn::LeftClick()
 	
 	if (hit.GetActor()->IsA(ABaseTile::StaticClass()))
 	{
+		HitTile = Cast<ABaseTile>(hit.GetActor());
+
 		if (gameMode->currentTile != nullptr) //Deselect CurrentTile if we already have one 
 		{
-			gameMode->currentTile->selected = gameMode->currentTile->selected = false;
+			gameMode->currentTile->DeSelectTile();
 		}
-		
-		HitTile = Cast<ABaseTile>(hit.GetActor());
-		UE_LOG(LogTemp, Warning, TEXT("Hit Tile = %f, %f"),HitTile->pos.X,HitTile->pos.Y);
-		
 		if(HitTile->CurrentUnit != nullptr) // Check if HitTile is holding a Unit
 		{	
-			gameMode->currentTile = HitTile; //This is now our CurrentTile
-			HitTile->selected = !HitTile->selected;	
+			HitTile->SelectTile();
 		}
 		
+		UE_LOG(LogTemp, Warning, TEXT("Hit Tile = %f, %f"),HitTile->pos.X,HitTile->pos.Y);
 	}
 
 }

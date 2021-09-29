@@ -22,6 +22,8 @@ public:
 
 	int CurrentHealth;
 	int CurrentStamina;
+	UPROPERTY(EditAnywhere)
+	bool teamBlue;
 	
 	void NewRoundReset();
 	void Die();
