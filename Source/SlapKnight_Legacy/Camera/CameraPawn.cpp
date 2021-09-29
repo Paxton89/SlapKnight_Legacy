@@ -63,16 +63,22 @@ void ACameraPawn::Rotate(float Value)
 
 void ACameraPawn::LeftClick()
 {
-	FHitResult Hit;
-	UKismetSystemLibrary::LineTraceSingle(GetWorld(), GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 10000, UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::ForOneFrame, Hit, true);
-	if (Hit.GetActor()->IsA(ABaseTile::StaticClass()))
+
+	FHitResult hit;
+	FHitResult underMouse;
+	gameMode->GetPlayerController()->GetHitResultUnderCursor(ECC_WorldDynamic, false, underMouse);
+	UKismetSystemLibrary::LineTraceSingle(GetWorld(), GetActorLocation(), underMouse.ImpactPoint, UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::ForOneFrame, hit, true);
+	if (!hit.bBlockingHit) return;
+	if (hit.GetActor()->IsA(ABaseTile::StaticClass()))
 	{
-		gameMode->currentTile->selected = !gameMode->currentTile->selected;
-		HitTile = Cast<ABaseTile>(Hit.GetActor());
+		if (gameMode->currentTile)
+		{
+			gameMode->currentTile->selected = !gameMode->currentTile->selected;
+		}
+		HitTile = Cast<ABaseTile>(hit.GetActor());
 		gameMode->currentTile = HitTile;
 		HitTile->selected = !HitTile->selected;
 	}
-
 
 }
 

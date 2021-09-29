@@ -9,10 +9,12 @@ ABaseTile::ABaseTile()
 	PrimaryActorTick.bCanEverTick = true;
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	RootComponent = Mesh;
-	HighlightedPlane = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("highlight"));
+	HighlightedPlaneGreen = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("highlightGreen"));
+	HighlightedPlaneYellow = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("highlightYellow"));
+	HighlightedPlaneGreen->SetupAttachment(RootComponent);
+	HighlightedPlaneYellow->SetupAttachment(RootComponent);
 	TargetToMove = CreateDefaultSubobject<USceneComponent>(TEXT("TargetToMove"));
 	TargetToMove->SetupAttachment(RootComponent);
-	HighlightedPlane->SetupAttachment(RootComponent);
 }
 
 void ABaseTile::BeginPlay()
@@ -25,11 +27,19 @@ void ABaseTile::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (legalTile)
 	{
-		HighlightedPlane->SetVisibility(true);
+		HighlightedPlaneGreen->SetVisibility(true);
 	}
 	else
 	{
-		HighlightedPlane->SetVisibility(false);
+		HighlightedPlaneGreen->SetVisibility(false);
+	}	
+	if (selected)
+	{
+		HighlightedPlaneYellow->SetVisibility(true);
+	}
+	else
+	{
+		HighlightedPlaneYellow->SetVisibility(false);
 	}
 }
 
@@ -38,12 +48,12 @@ void ABaseTile::EstablishTileLegality()
 	if (activated && affordable && occupied == nullptr) 
 	{ 
 		legalTile = true; 
-		HighlightedPlane->SetVisibility(true);
+		HighlightedPlaneGreen->SetVisibility(true);
 	}
 	else 
 	{ 
 		legalTile = false; 
-		HighlightedPlane->SetVisibility(false);
+		HighlightedPlaneGreen->SetVisibility(false);
 	}
 }
 

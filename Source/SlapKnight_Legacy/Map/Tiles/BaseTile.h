@@ -55,7 +55,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* Mesh;
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* HighlightedPlane;
+	UStaticMeshComponent* HighlightedPlaneGreen;
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* HighlightedPlaneYellow;
 
 
 	

@@ -24,4 +24,9 @@ UTileManager* ASlapKnight_LegacyGameModeBase::GetTileManager()
 	return tileManager;
 }
 
+APlayerController* ASlapKnight_LegacyGameModeBase::GetPlayerController()
+{
+	return playerController;
+}
+
 
