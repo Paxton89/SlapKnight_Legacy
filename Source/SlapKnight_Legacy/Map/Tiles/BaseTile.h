@@ -15,6 +15,7 @@ public:
 	ABaseTile();
 	virtual void Tick(float DeltaTime) override;
 
+	void EstablishTileLegality();
 
 	UPROPERTY(EditAnywhere)
 	FVector pos;
@@ -23,10 +24,16 @@ public:
 	int tileId;
 
 	UPROPERTY(EditAnywhere)
+	bool selected;
+
+	UPROPERTY(EditAnywhere)
 	bool activated;
 
 	UPROPERTY(EditAnywhere)
 	bool affordable;
+
+	UPROPERTY(EditAnywhere)
+	bool legalTile;
 
 	UPROPERTY(EditAnywhere)
 	AActor* occupied;
@@ -39,6 +46,10 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* Mesh;
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* HighlightedPlane;
+
+
 	
 
 };
