@@ -63,21 +63,28 @@ void ACameraPawn::Rotate(float Value)
 
 void ACameraPawn::LeftClick()
 {
-
 	FHitResult hit;
 	FHitResult underMouse;
 	gameMode->GetPlayerController()->GetHitResultUnderCursor(ECC_WorldDynamic, false, underMouse);
 	UKismetSystemLibrary::LineTraceSingle(GetWorld(), GetActorLocation(), underMouse.ImpactPoint, UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::ForOneFrame, hit, true);
 	if (!hit.bBlockingHit) return;
+	
 	if (hit.GetActor()->IsA(ABaseTile::StaticClass()))
 	{
-		if (gameMode->currentTile)
+		if (gameMode->currentTile != nullptr) //Deselect CurrentTile if we already have one 
 		{
-			gameMode->currentTile->selected = !gameMode->currentTile->selected;
+			gameMode->currentTile->selected = gameMode->currentTile->selected = false;
 		}
+		
 		HitTile = Cast<ABaseTile>(hit.GetActor());
-		gameMode->currentTile = HitTile;
-		HitTile->selected = !HitTile->selected;
+		UE_LOG(LogTemp, Warning, TEXT("Hit Tile = %f, %f"),HitTile->pos.X,HitTile->pos.Y);
+		
+		if(HitTile->CurrentUnit != nullptr) // Check if HitTile is holding a Unit
+		{	
+			gameMode->currentTile = HitTile; //This is now our CurrentTile
+			HitTile->selected = !HitTile->selected;	
+		}
+		
 	}
 
 }

@@ -1,5 +1,8 @@
 // J
 #include "SlapKnight_Legacy/Units/BaseUnit.h"
+
+#include <stdbool.h>
+
 #include "SlapKnight_Legacy/Map/Tiles/BaseTile.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SceneComponent.h"
@@ -12,6 +15,7 @@ ABaseUnit::ABaseUnit()
 	RootComponent = Root;
 	
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Skeletal Mesh"));
+	SkeletalMesh->SetCollisionProfileName("NoCollision");
 	SkeletalMesh->SetupAttachment(RootComponent);
 	
 }
@@ -58,7 +62,7 @@ void ABaseUnit::CenterOnTile()
 	{
 		auto CurrentTile = Cast<ABaseTile>(Hit.Actor);
 		SetActorLocation(CurrentTile->TargetToMove->GetComponentLocation());
-		UE_LOG(LogTemp, Log, TEXT("Centered"));
+		CurrentTile->CurrentUnit = this;
 	}
 }
 

@@ -45,7 +45,7 @@ void ABaseTile::Tick(float DeltaTime)
 
 void ABaseTile::EstablishTileLegality()
 {
-	if (activated && affordable && occupied == nullptr) 
+	if (activated && affordable && CurrentUnit == nullptr) 
 	{ 
 		legalTile = true; 
 		HighlightedPlaneGreen->SetVisibility(true);

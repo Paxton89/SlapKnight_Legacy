@@ -23,7 +23,7 @@ void UTileManager::BeginPlay()
 	{
 		int x = tile->pos.X;
 		int y = tile->pos.Y;
-		UE_LOG(LogTemp, Warning, TEXT("Tile Id: %d Tile Pos: (%d,%d)"), tile->tileId, x, y);
+		//UE_LOG(LogTemp, Warning, TEXT("Tile Id: %d Tile Pos: (%d,%d)"), tile->tileId, x, y);
 	}
 }
 
