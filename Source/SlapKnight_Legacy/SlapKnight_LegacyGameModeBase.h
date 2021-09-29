@@ -7,6 +7,7 @@
 #include "SlapKnight_LegacyGameModeBase.generated.h"
 
 class UTileManager;
+class ABaseTile;
 UCLASS()
 class SLAPKNIGHT_LEGACY_API ASlapKnight_LegacyGameModeBase : public AGameModeBase
 {
@@ -24,6 +25,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	APlayerController* playerController;
+
+	ABaseTile* currentTile;
 
 	UTileManager* tileManager;
 
