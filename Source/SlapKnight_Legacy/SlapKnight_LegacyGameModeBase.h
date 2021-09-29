@@ -7,14 +7,25 @@
 #include "SlapKnight_LegacyGameModeBase.generated.h"
 
 class UTileManager;
-
 UCLASS()
 class SLAPKNIGHT_LEGACY_API ASlapKnight_LegacyGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
 
+public:
+	UTileManager* GetTileManager();
 
+
+
+protected:
+	ASlapKnight_LegacyGameModeBase();
+
+	virtual void BeginPlay() override;
+
+	APlayerController* playerController;
+
+	UTileManager* tileManager;
 
 
 };

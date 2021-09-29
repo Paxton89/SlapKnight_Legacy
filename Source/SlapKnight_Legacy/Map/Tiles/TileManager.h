@@ -28,5 +28,9 @@ public:
 
 	TArray<ABaseTile*> allTiles;
 	TArray<AActor*> allActorTiles;
+
+
+
+
 		
 };
