@@ -47,3 +47,11 @@ void ABaseTile::EstablishTileLegality()
 	}
 }
 
+void ABaseTile::GetUnitTeam()
+{
+}
+
+void ABaseTile::GetUnitStamina()
+{
+}
+

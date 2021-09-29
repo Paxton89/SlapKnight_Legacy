@@ -17,6 +17,11 @@ public:
 
 	void EstablishTileLegality();
 
+	void GetUnitTeam();
+
+	void GetUnitStamina();
+
+
 	UPROPERTY(EditAnywhere)
 	FVector pos;
 	
@@ -34,6 +39,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	bool legalTile;
+
+	UPROPERTY(EditAnywhere)
+	bool dificultTerrain;
 
 	UPROPERTY(EditAnywhere)
 	AActor* occupied;
