@@ -17,5 +17,5 @@ class SLAPKNIGHT_LEGACY_API II_Unit
 public:
 	UFUNCTION()
     virtual void MoveForward() = 0;
-	
+
 };
