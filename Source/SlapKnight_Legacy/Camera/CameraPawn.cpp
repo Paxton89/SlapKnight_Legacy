@@ -3,7 +3,7 @@
 #include "SlapKnight_Legacy/Camera/CameraPawn.h"
 #include "Components/SceneComponent.h"
 #include "Camera/CameraComponent.h"
-#include "SlapKnight_LegacyGameModeBase.h"
+#include "../SlapKnight_LegacyGameModeBase.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "SlapKnight_Legacy/Map/Tiles/BaseTile.h"
 
@@ -52,8 +52,6 @@ void ACameraPawn::MoveRight(float Value)
 void ACameraPawn::Rotate(float Value)
 {
 
-	
-
 	FRotator NewRotation = FRotator(0, Value , 0);
 
 	FQuat QuatRotation = FQuat(NewRotation);
@@ -66,8 +64,15 @@ void ACameraPawn::Rotate(float Value)
 void ACameraPawn::LeftClick()
 {
 	FHitResult Hit;
-	ABaseTile* HitTile;;
 	UKismetSystemLibrary::LineTraceSingle(GetWorld(), GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 10000, UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::ForOneFrame, Hit, true);
-	HitTile = Cast<ABaseTile>(Hit.Actor);
+	if (Hit.GetActor()->IsA(ABaseTile::StaticClass()))
+	{
+		gameMode->currentTile->selected = !gameMode->currentTile->selected;
+		HitTile = Cast<ABaseTile>(Hit.GetActor());
+		gameMode->currentTile = HitTile;
+		HitTile->selected = !HitTile->selected;
+	}
+
+
 }
 

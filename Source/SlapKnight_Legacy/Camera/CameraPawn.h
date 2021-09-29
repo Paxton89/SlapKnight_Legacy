@@ -7,6 +7,7 @@
 #include "CameraPawn.generated.h"
 
 class UCameraComponent;
+class ABaseTile;
 class USceneComponent;
 class ASlapKnight_LegacyGameModeBase;
 UCLASS()
@@ -25,9 +26,10 @@ protected:
 	//UCameraComponent* MainCam;
 	USceneComponent* Root;
 
+	ABaseTile* HitTile;
+	
 	UPROPERTY(EditAnywhere)
 	float MoveSpeed;
-	
 	float MoveX;
 	float MoveY;
 	TArray<AActor*> IgnoreList;

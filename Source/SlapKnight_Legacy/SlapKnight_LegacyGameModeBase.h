@@ -17,6 +17,7 @@ class SLAPKNIGHT_LEGACY_API ASlapKnight_LegacyGameModeBase : public AGameModeBas
 public:
 	UTileManager* GetTileManager();
 
+	ABaseTile* currentTile;
 
 
 protected:
@@ -25,8 +26,6 @@ protected:
 	virtual void BeginPlay() override;
 
 	APlayerController* playerController;
-
-	ABaseTile* currentTile;
 
 	UTileManager* tileManager;
 
