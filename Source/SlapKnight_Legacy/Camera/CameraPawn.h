@@ -8,6 +8,7 @@
 
 class UCameraComponent;
 class USceneComponent;
+class ABaseTile;
 UCLASS()
 class SLAPKNIGHT_LEGACY_API ACameraPawn : public APawn
 {
@@ -30,6 +31,7 @@ protected:
 	float MoveX;
 	float MoveY;
 	TArray<AActor*> IgnoreList;
+	ABaseTile* HitTile;
 	
 	void MoveForward(float Value);
 	void MoveRight(float Value);

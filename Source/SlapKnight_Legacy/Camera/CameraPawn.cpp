@@ -47,9 +47,5 @@ void ACameraPawn::MoveRight(float Value)
 
 void ACameraPawn::LeftClick()
 {
-	FHitResult Hit;
-	ABaseTile* HitTile;;
-	UKismetSystemLibrary::LineTraceSingle(GetWorld(), GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 10000, UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::ForOneFrame, Hit, true);
-	HitTile = Cast<ABaseTile>(Hit.Actor);
 }
 
