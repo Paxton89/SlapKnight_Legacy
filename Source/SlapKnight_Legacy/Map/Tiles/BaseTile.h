@@ -6,6 +6,8 @@
 
 class UStaticMeshComponent;
 class USceneComponent;
+class ABaseUnit;
+class ASlapKnight_LegacyGameModeBase;
 UCLASS()
 class SLAPKNIGHT_LEGACY_API ABaseTile : public AActor
 {
@@ -20,6 +22,10 @@ public:
 	void GetUnitTeam();
 
 	void GetUnitStamina();
+
+	void SelectTile();
+
+	void DeSelectTile();
 
 
 	UPROPERTY(EditAnywhere)
@@ -51,6 +57,8 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+	ASlapKnight_LegacyGameModeBase* gameMode;
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* Mesh;

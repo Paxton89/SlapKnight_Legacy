@@ -1,7 +1,8 @@
 
 #include "SlapKnight_Legacy/Map/Tiles/BaseTile.h"
 #include "Components/SceneComponent.h"
-
+#include "../../Units/BaseUnit.h"
+#include "../../SlapKnight_LegacyGameModeBase.h"
 #include "Components/StaticMeshComponent.h"
 
 ABaseTile::ABaseTile()
@@ -20,6 +21,7 @@ ABaseTile::ABaseTile()
 void ABaseTile::BeginPlay()
 {
 	Super::BeginPlay();
+	gameMode = Cast<ASlapKnight_LegacyGameModeBase>(GetWorld()->GetAuthGameMode());
 }
 
 void ABaseTile::Tick(float DeltaTime)
@@ -63,5 +65,26 @@ void ABaseTile::GetUnitTeam()
 
 void ABaseTile::GetUnitStamina()
 {
+}
+
+void ABaseTile::SelectTile()
+{
+	
+	if (CurrentUnit)
+	{
+		if (Cast<ABaseUnit>(CurrentUnit)->teamBlue == gameMode->teamBlue)
+		{
+			selected = true;
+			gameMode->currentTile = this; //This is now our CurrentTile
+		}
+	}
+}
+
+void ABaseTile::DeSelectTile()
+{
+	if (Cast<ABaseUnit>(CurrentUnit)->teamBlue == gameMode->teamBlue)
+	{
+		selected = false;
+	}
 }
 

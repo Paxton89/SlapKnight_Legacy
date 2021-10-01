@@ -22,6 +22,9 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	ABaseTile* currentTile;
 
+	UPROPERTY(VisibleAnywhere)
+	bool teamBlue;
+
 
 protected:
 	ASlapKnight_LegacyGameModeBase();
