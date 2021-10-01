@@ -33,10 +33,8 @@ void ABaseUnit::BeginPlay()
 void ABaseUnit::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if(CurrentHealth <= 0)
-	{
-		Die();
-	}
+	if(CurrentHealth <= 0) Die();
+	if(CurrentLocation != TargetLocation) Move();
 }
 
 void ABaseUnit::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -66,7 +64,31 @@ void ABaseUnit::CenterOnTile()
 	}
 }
 
-void ABaseUnit::MoveToTile(ABaseTile* TargetTile)
+void ABaseUnit::SetTargetTile(ABaseTile* TargetTile)
 {
+	TargetLocation = TargetTile->TargetToMove->GetComponentLocation();
+}
+
+void ABaseUnit::Move()
+{
+	CurrentLocation = GetActorLocation();
+	SetActorLocation(FMath::Lerp(CurrentLocation, TargetLocation,0.03));
+	if(CurrentLocation == TargetLocation)
+	{
+		CenterOnTile();
+		UE_LOG(LogTemp, Log, TEXT("Location Reached"));
+	}
+}
+
+void ABaseUnit::UpdateMaterial()
+{
+	if(teamBlue)
+	{
+		//Change material here
+	}
+	else
+	{
+		//And here
+	}
 }
 

@@ -82,7 +82,7 @@ void ABaseTile::SelectTile()
 
 void ABaseTile::DeSelectTile()
 {
-	if (Cast<ABaseUnit>(CurrentUnit)->teamBlue == gameMode->teamBlue)
+	if (CurrentUnit != nullptr && Cast<ABaseUnit>(CurrentUnit)->teamBlue == gameMode->teamBlue)
 	{
 		selected = false;
 	}

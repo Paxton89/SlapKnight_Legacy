@@ -23,9 +23,8 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	//UCameraComponent* MainCam;
+	UCameraComponent* MainCam;
 	USceneComponent* Root;
-
 	ABaseTile* HitTile;
 	
 	UPROPERTY(EditAnywhere)
@@ -33,6 +32,7 @@ protected:
 	float MoveX;
 	float MoveY;
 	TArray<AActor*> IgnoreList;
+	TArray<ABaseTile*> PairedList;
 	
 	ASlapKnight_LegacyGameModeBase* gameMode;
 

@@ -28,7 +28,7 @@ public:
 	void NewRoundReset();
 	void Die();
 	void CenterOnTile();
-	void MoveToTile(ABaseTile* TargetTile);
+	void SetTargetTile(ABaseTile* TargetTile);
 	
 protected:
 	virtual void BeginPlay() override;
@@ -46,4 +46,9 @@ protected:
 	int DamagePower;
 	
 	TArray<AActor*> IgnoreList;
+	FVector TargetLocation;
+	FVector CurrentLocation;
+
+	void UpdateMaterial();
+	void Move();
 };

@@ -50,7 +50,7 @@ public:
 	bool dificultTerrain;
 
 	UPROPERTY(EditAnywhere)
-	AActor* CurrentUnit;
+	ABaseUnit* CurrentUnit;
 
 	UPROPERTY(EditAnywhere)
 	USceneComponent* TargetToMove;
