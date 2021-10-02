@@ -8,6 +8,8 @@ class UStaticMeshComponent;
 class USceneComponent;
 class ABaseUnit;
 class ASlapKnight_LegacyGameModeBase;
+class UTileManager;
+
 UCLASS()
 class SLAPKNIGHT_LEGACY_API ABaseTile : public AActor
 {
@@ -19,13 +21,17 @@ public:
 
 	void EstablishTileLegality();
 
-	void GetUnitTeam();
+	bool GetUnitTeam();
 
-	void GetUnitStamina();
+	int GetUnitStamina();
 
 	void SelectTile();
 
 	void DeSelectTile();
+
+	void UpdateNeighbours();
+
+	void ActivateNeighbours(bool activate);
 
 
 	UPROPERTY(EditAnywhere)
@@ -33,6 +39,9 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	int tileId;
+
+	UPROPERTY(EditAnywhere)
+	int costToMove = 10;
 
 	UPROPERTY(EditAnywhere)
 	bool selected;
@@ -55,6 +64,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	USceneComponent* TargetToMove;
 
+	UPROPERTY(EditAnywhere)
+	TArray<ABaseTile*> neighbours;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -62,12 +74,11 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* Mesh;
+
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* HighlightedPlaneGreen;
+
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* HighlightedPlaneYellow;
-
-
-	
 
 };

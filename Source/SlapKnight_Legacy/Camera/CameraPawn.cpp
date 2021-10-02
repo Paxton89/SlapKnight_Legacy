@@ -6,6 +6,7 @@
 #include "../SlapKnight_LegacyGameModeBase.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "SlapKnight_Legacy/Map/Tiles/BaseTile.h"
+#include "SlapKnight_Legacy/Map/Tiles/TileManager.h"
 #include "SlapKnight_Legacy/Units/BaseUnit.h"
 
 ACameraPawn::ACameraPawn()
@@ -28,7 +29,6 @@ void ACameraPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	AddActorLocalOffset(FVector(MoveX, MoveY, 0) * MoveSpeed);
-	//AddActorWorldOffset(FVector(MoveX, MoveY, 0) * MoveSpeed);
 }
 
 
@@ -53,14 +53,9 @@ void ACameraPawn::MoveRight(float Value)
 
 void ACameraPawn::Rotate(float Value)
 {
-
-	FRotator NewRotation = FRotator(0, Value , 0);
-
+	FRotator NewRotation = FRotator(0, Value*2 , 0);
 	FQuat QuatRotation = FQuat(NewRotation);
-
 	AddActorLocalRotation(QuatRotation, false, 0, ETeleportType::None);
-
-
 }
 
 void ACameraPawn::LeftClick()
@@ -68,7 +63,9 @@ void ACameraPawn::LeftClick()
 	FHitResult hit;
 	FHitResult underMouse;
 	gameMode->GetPlayerController()->GetHitResultUnderCursor(ECC_WorldDynamic, false, underMouse);
-	UKismetSystemLibrary::LineTraceSingle(GetWorld(), MainCam->GetComponentLocation(), underMouse.ImpactPoint, UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::Persistent, hit, true);
+	UKismetSystemLibrary::LineTraceSingle(GetWorld(), MainCam->GetComponentLocation(), underMouse.ImpactPoint, UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::ForOneFrame, hit, true);
+
+	bool hitSomething = underMouse.bBlockingHit;
 	if (!hit.bBlockingHit)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("CameraPawn hit nothing"));
@@ -80,12 +77,17 @@ void ACameraPawn::LeftClick()
 		HitTile = Cast<ABaseTile>(hit.GetActor());
 		if(PairedList.Num() > 0)
 		{
-			gameMode->currentTile->CurrentUnit->SetTargetTile(HitTile);
-			HitTile->CurrentUnit = gameMode->currentTile->CurrentUnit;
-			gameMode->currentTile->CurrentUnit = nullptr;
-			gameMode->currentTile->selected = false;
-			PairedList.Empty();
-			return;
+			if (HitTile->CurrentUnit == nullptr && HitTile->activated) // if HitTile has a unit, Select this tile
+			{
+				gameMode->currentTile->CurrentUnit->SetTargetTile(HitTile);
+				gameMode->currentTile->CurrentUnit->CurrentStamina -= HitTile->costToMove;
+				gameMode->currentTile->DeSelectTile();
+				HitTile->CurrentUnit = gameMode->currentTile->CurrentUnit;
+				gameMode->currentTile->CurrentUnit = nullptr;
+				PairedList.Empty();
+				return;
+			}
+
 		}
 		if (gameMode->currentTile != nullptr) // if CurrentTile has a value
 		{
@@ -97,8 +99,9 @@ void ACameraPawn::LeftClick()
 			HitTile->SelectTile();
 		}	
 
-		UE_LOG(LogTemp, Warning, TEXT("Hit Tile = %f, %f"),HitTile->pos.X,HitTile->pos.Y);
+		UE_LOG(LogTemp, Warning, TEXT("Hit Tile id = %d"),HitTile->tileId);
 	}
 
 }
+
 

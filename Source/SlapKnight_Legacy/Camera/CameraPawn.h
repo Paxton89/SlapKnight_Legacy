@@ -10,6 +10,7 @@ class UCameraComponent;
 class ABaseTile;
 class USceneComponent;
 class ASlapKnight_LegacyGameModeBase;
+class UTileManager;
 UCLASS()
 class SLAPKNIGHT_LEGACY_API ACameraPawn : public APawn
 {
@@ -33,6 +34,7 @@ protected:
 	float MoveY;
 	TArray<AActor*> IgnoreList;
 	TArray<ABaseTile*> PairedList;
+	TArray<ABaseTile*> neighbours;
 	
 	ASlapKnight_LegacyGameModeBase* gameMode;
 

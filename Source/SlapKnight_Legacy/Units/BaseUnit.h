@@ -19,8 +19,10 @@ public:
 	ABaseUnit();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	
+	UPROPERTY(EditAnywhere)
 	int CurrentHealth;
+	UPROPERTY(EditAnywhere)
 	int CurrentStamina;
 	UPROPERTY(EditAnywhere)
 	bool teamBlue;
@@ -39,7 +41,7 @@ protected:
 	USkeletalMeshComponent* SkeletalMesh;
 
 	UPROPERTY(EditAnywhere)
-	int StaminaMax;
+	int StaminaMax = 30;
 	UPROPERTY(EditAnywhere)
 	int HealthMax;
 	UPROPERTY(EditAnywhere)

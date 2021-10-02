@@ -6,7 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "SlapKnight_LegacyGameModeBase.generated.h"
 
-class UTileManager;
+//class UTileManager;
 class ABaseTile;
 UCLASS()
 class SLAPKNIGHT_LEGACY_API ASlapKnight_LegacyGameModeBase : public AGameModeBase
@@ -15,7 +15,6 @@ class SLAPKNIGHT_LEGACY_API ASlapKnight_LegacyGameModeBase : public AGameModeBas
 	
 
 public:
-	UTileManager* GetTileManager();
 
 	APlayerController* GetPlayerController();
 
@@ -25,16 +24,19 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	bool teamBlue;
 
+	UPROPERTY(VisibleAnywhere)
+	TArray<ABaseTile*> allTiles;
+	
 
 protected:
 	ASlapKnight_LegacyGameModeBase();
 
 	APlayerController* playerController;
 
+	TArray<AActor*> allActorTiles;
+
 	virtual void BeginPlay() override;
 
 
-	UTileManager* tileManager;
-
-
 };
+
