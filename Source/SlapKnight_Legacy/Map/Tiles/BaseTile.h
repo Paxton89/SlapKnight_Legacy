@@ -20,65 +20,33 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void EstablishTileLegality();
-
+	void IsLegalTile(bool legal);
 	bool GetUnitTeam();
-
+	void SelectTile();
+	void DeSelectTile();
+	void UpdateNeighbours();
+	void ActivateNeighbours(bool activate);
 	int GetUnitStamina();
 
-	void SelectTile();
-
-	void DeSelectTile();
-
-	void UpdateNeighbours();
-
-	void ActivateNeighbours(bool activate);
-
-
-	UPROPERTY(EditAnywhere)
-	FVector pos;
-	
-	UPROPERTY(EditAnywhere)
-	int tileId;
-
-	UPROPERTY(EditAnywhere)
+	int TileId;
 	int costToMove = 10;
-
-	UPROPERTY(EditAnywhere)
 	bool selected;
-
-	UPROPERTY(EditAnywhere)
 	bool activated;
-
-	UPROPERTY(EditAnywhere)
 	bool affordable;
-
-	UPROPERTY(EditAnywhere)
 	bool legalTile;
-
-	UPROPERTY(EditAnywhere)
 	bool dificultTerrain;
 
-	UPROPERTY(EditAnywhere)
+	FVector pos;
 	ABaseUnit* CurrentUnit;
-
-	UPROPERTY(EditAnywhere)
 	USceneComponent* TargetToMove;
-
-	UPROPERTY(EditAnywhere)
-	TArray<ABaseTile*> neighbours;
 
 protected:
 	virtual void BeginPlay() override;
 
+	TArray<ABaseTile*> neighbours;
 	ASlapKnight_LegacyGameModeBase* gameMode;
-
-	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* Mesh;
-
-	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* HighlightedPlaneGreen;
-
-	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* HighlightedPlaneYellow;
 
 };

@@ -1,4 +1,3 @@
-// J
 #pragma once
 
 #include "Components/SceneComponent.h"
@@ -26,35 +25,31 @@ public:
 	int CurrentStamina;
 	UPROPERTY(EditAnywhere)
 	bool teamBlue;
-	
+	UPROPERTY(EditAnywhere)
+	int StaminaMax = 30;
+
 	void NewRoundReset();
 	void Die();
+	void ReciveDamage(int damage);
 	void CenterOnTile();
 	void SetTargetTile(ABaseTile* TargetTile);
+	void Move();
 	
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere)
 	USceneComponent* Root;
-	UPROPERTY(EditAnywhere)
 	USkeletalMeshComponent* SkeletalMesh;
-	UPROPERTY(EditAnywhere)
 	UMaterialInstance* Mat_BlueTeam;
-	UPROPERTY(EditAnywhere)
 	UMaterialInstance* Mat_RedTeam;
 
-	UPROPERTY(EditAnywhere)
-	int StaminaMax = 30;
-	UPROPERTY(EditAnywhere)
 	int HealthMax;
-	UPROPERTY(EditAnywhere)
 	int DamagePower;
+	bool Moving;
 	
 	TArray<AActor*> IgnoreList;
 	FVector TargetLocation;
 	FVector CurrentLocation;
 
 	void UpdateMaterial();
-	void Move();
 };
