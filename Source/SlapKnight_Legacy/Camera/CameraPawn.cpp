@@ -27,6 +27,7 @@ void ACameraPawn::BeginPlay() // Get camera and gamemode for future reference.
 void ACameraPawn::Tick(float DeltaTime) 
 {
 	Super::Tick(DeltaTime);
+	MouseHoverOverTile();
 }
 
 
@@ -58,6 +59,27 @@ void ACameraPawn::Rotate(float Value)
 	AddActorLocalRotation(QuatRotation, false, 0, ETeleportType::None);
 }
 
+void ACameraPawn::MouseHoverOverTile()
+{
+	FHitResult hit;
+	FHitResult underMouse;
+	gameMode->GetPlayerController()->GetHitResultUnderCursor(ECC_WorldDynamic, false, underMouse);
+	UKismetSystemLibrary::LineTraceSingle(GetWorld(), MainCam->GetComponentLocation(), underMouse.ImpactPoint, UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::None, hit, true);
+	if (!hit.bBlockingHit)
+	{
+		return;
+	}
+	if (hit.GetActor()->IsA(ABaseTile::StaticClass()))
+	{
+		ABaseTile* hoveringTile = Cast<ABaseTile>(hit.GetActor());
+		if (hoveringTile->CurrentUnit != nullptr) // if HitTile has a unit, Select this tile
+		{
+			
+			HoveringUnitInfo(hoveringTile, hoveringTile->CurrentUnit->CurrentStamina);
+		}
+	}
+}
+
 void ACameraPawn::LeftClick()
 {
 	FHitResult hit;
@@ -68,6 +90,7 @@ void ACameraPawn::LeftClick()
 	bool hitSomething = underMouse.bBlockingHit;
 	if (!hit.bBlockingHit)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("hit nothing "));
 		ClickFailUI();//shows troll face on ui for a fraction of a second
 		return;
 	}
@@ -92,11 +115,13 @@ void ACameraPawn::LeftClick()
 		if (gameMode->currentTile != nullptr) // if CurrentTile has a value
 		{
 			gameMode->currentTile->DeSelectTile();
+			
 		}
 		if(HitTile->CurrentUnit != nullptr) // if HitTile has a unit, Select this tile
 		{
 			PairedList.Add(HitTile);
 			HitTile->SelectTile();
+			ShowUnitStatsUI(HitTile);
 		}	
 
 		UE_LOG(LogTemp, Warning, TEXT("Hit Tile id = %d"),HitTile->tileId);

@@ -21,9 +21,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ClickFailUI();
 	UFUNCTION(BlueprintImplementableEvent)
-	void ChangeTeamUI();
+	void HoveringUnitInfo(ABaseTile* tile, int stamina);
 	UFUNCTION(BlueprintImplementableEvent)
-	void ShowUnitStatsUI();
+	void ShowUnitStatsUI(ABaseTile* tile);
 
 protected:
 	virtual void BeginPlay() override;
@@ -48,5 +48,6 @@ protected:
 	void MoveRight(float Value);
 	void LeftClick();
 	void Rotate(float Value);
+	void MouseHoverOverTile();
 	
 };
