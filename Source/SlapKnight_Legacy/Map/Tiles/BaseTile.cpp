@@ -2,14 +2,19 @@
 #include "Components/SceneComponent.h"
 #include "../../Units/BaseUnit.h"
 #include "../../SlapKnight_LegacyGameModeBase.h"
+#include "Components/BoxComponent.h"
 #include "SlapKnight_Legacy/Map/Tiles/TileManager.h"
 #include "Components/StaticMeshComponent.h"
 
 ABaseTile::ABaseTile() // Creates the root, the targetToMove that is the position where units will move to and it creates 2 planes used for highlighting.
 {
 	PrimaryActorTick.bCanEverTick = true;
+	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
+	Box->SetCollisionProfileName("BlockAllDynamic");
+	RootComponent = Box;
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	RootComponent = Mesh;
+	Mesh->SetupAttachment(RootComponent);
+	Mesh->SetCollisionProfileName("NoCollision");
 	HighlightedPlaneGreen = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("highlightGreen"));
 	HighlightedPlaneYellow = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("highlightYellow"));
 	HighlightedPlaneGreen->SetupAttachment(RootComponent);
