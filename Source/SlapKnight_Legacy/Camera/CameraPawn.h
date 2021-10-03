@@ -18,7 +18,13 @@ class SLAPKNIGHT_LEGACY_API ACameraPawn : public APawn
 
 public:
 	ACameraPawn();
-	
+	UFUNCTION(BlueprintImplementableEvent)
+	void ClickFailUI();
+	UFUNCTION(BlueprintImplementableEvent)
+	void ChangeTeamUI();
+	UFUNCTION(BlueprintImplementableEvent)
+	void ShowUnitStatsUI();
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -42,4 +48,5 @@ protected:
 	void MoveRight(float Value);
 	void LeftClick();
 	void Rotate(float Value);
+	
 };

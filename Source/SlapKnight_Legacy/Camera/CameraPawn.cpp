@@ -9,26 +9,24 @@
 #include "SlapKnight_Legacy/Map/Tiles/TileManager.h"
 #include "SlapKnight_Legacy/Units/BaseUnit.h"
 
-ACameraPawn::ACameraPawn()
+ACameraPawn::ACameraPawn() // Establish root.
 {
 	PrimaryActorTick.bCanEverTick = true;
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;
-	//MainCam = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	//MainCam->SetupAttachment(RootComponent);
 }
 
-void ACameraPawn::BeginPlay()
+
+void ACameraPawn::BeginPlay() // Get camera and gamemode for future reference.
 {
 	Super::BeginPlay();
 	gameMode = Cast<ASlapKnight_LegacyGameModeBase>(GetWorld()->GetAuthGameMode());
 	MainCam = Cast<UCameraComponent>(GetComponentByClass(UCameraComponent::StaticClass()));
 }
 
-void ACameraPawn::Tick(float DeltaTime)
+void ACameraPawn::Tick(float DeltaTime) 
 {
 	Super::Tick(DeltaTime);
-	AddActorLocalOffset(FVector(MoveX, MoveY, 0) * MoveSpeed);
 }
 
 
@@ -44,11 +42,13 @@ void ACameraPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 void ACameraPawn::MoveForward(float Value)
 {
 	MoveY = Value;
+	AddActorLocalOffset(FVector(MoveX, MoveY, 0) * MoveSpeed);
 }
 
 void ACameraPawn::MoveRight(float Value)
 {
 	MoveX = Value;
+	AddActorLocalOffset(FVector(MoveX, MoveY, 0) * MoveSpeed);
 }
 
 void ACameraPawn::Rotate(float Value)
@@ -68,7 +68,7 @@ void ACameraPawn::LeftClick()
 	bool hitSomething = underMouse.bBlockingHit;
 	if (!hit.bBlockingHit)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("CameraPawn hit nothing"));
+		ClickFailUI();//shows troll face on ui for a fraction of a second
 		return;
 	}
 	
@@ -77,7 +77,7 @@ void ACameraPawn::LeftClick()
 		HitTile = Cast<ABaseTile>(hit.GetActor());
 		if(PairedList.Num() > 0)
 		{
-			if (HitTile->CurrentUnit == nullptr && HitTile->activated) // if HitTile has a unit, Select this tile
+			if (HitTile->CurrentUnit == nullptr && HitTile->legalTile) // if HitTile has a unit, Select this tile
 			{
 				gameMode->currentTile->CurrentUnit->SetTargetTile(HitTile);
 				gameMode->currentTile->CurrentUnit->CurrentStamina -= HitTile->costToMove;
@@ -103,5 +103,6 @@ void ACameraPawn::LeftClick()
 	}
 
 }
+
 
 
