@@ -28,6 +28,7 @@ void ABaseUnit::BeginPlay()
 	CurrentHealth = HealthMax;
 	IgnoreList.Add(this);
 	CenterOnTile();
+	UpdateMaterial();
 }
 
 void ABaseUnit::Tick(float DeltaTime)
@@ -84,11 +85,11 @@ void ABaseUnit::UpdateMaterial()
 {
 	if(teamBlue)
 	{
-		//Change material here
+		SkeletalMesh->SetMaterial(0, Mat_BlueTeam);
 	}
 	else
 	{
-		//And here
+		SkeletalMesh->SetMaterial(0, Mat_RedTeam);
 	}
 }
 

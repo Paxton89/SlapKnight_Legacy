@@ -39,6 +39,10 @@ protected:
 	USceneComponent* Root;
 	UPROPERTY(EditAnywhere)
 	USkeletalMeshComponent* SkeletalMesh;
+	UPROPERTY(EditAnywhere)
+	UMaterialInstance* Mat_BlueTeam;
+	UPROPERTY(EditAnywhere)
+	UMaterialInstance* Mat_RedTeam;
 
 	UPROPERTY(EditAnywhere)
 	int StaminaMax = 30;
