@@ -9,6 +9,7 @@ class USceneComponent;
 class ABaseUnit;
 class ASlapKnight_LegacyGameModeBase;
 class UTileManager;
+class UBoxComponent;
 
 UCLASS()
 class SLAPKNIGHT_LEGACY_API ABaseTile : public AActor
@@ -74,6 +75,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* Mesh;
+	
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* Box;
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* HighlightedPlaneGreen;
