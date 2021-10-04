@@ -6,6 +6,11 @@
 
 class UStaticMeshComponent;
 class USceneComponent;
+class ABaseUnit;
+class ASlapKnight_LegacyGameModeBase;
+class UTileManager;
+class UBoxComponent;
+
 UCLASS()
 class SLAPKNIGHT_LEGACY_API ABaseTile : public AActor
 {
@@ -16,50 +21,46 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void EstablishTileLegality();
+	void IsLegalTile(bool legal);
+	bool GetUnitTeam();
+	void SelectTile();
+	void DeSelectTile();
+	void UpdateNeighbours();
+	void ActivateNeighbours(bool activate);
+	int GetUnitStamina();
 
-	void GetUnitTeam();
-
-	void GetUnitStamina();
-
-
-	UPROPERTY(EditAnywhere)
-	FVector pos;
-	
-	UPROPERTY(EditAnywhere)
-	int tileId;
-
-	UPROPERTY(EditAnywhere)
+	int TileId;
+	int costToMove = 10;
 	bool selected;
-
-	UPROPERTY(EditAnywhere)
 	bool activated;
-
-	UPROPERTY(EditAnywhere)
 	bool affordable;
-
-	UPROPERTY(EditAnywhere)
 	bool legalTile;
-
-	UPROPERTY(EditAnywhere)
 	bool dificultTerrain;
 
+	ABaseUnit* CurrentUnit;
+	
 	UPROPERTY(EditAnywhere)
-	AActor* CurrentUnit;
-
+	FVector pos;
 	UPROPERTY(EditAnywhere)
 	USceneComponent* TargetToMove;
+
 
 protected:
 	virtual void BeginPlay() override;
 
+	TArray<ABaseTile*> neighbours;
+	ASlapKnight_LegacyGameModeBase* gameMode;
+	
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* Mesh;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* Box;
+
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* HighlightedPlaneGreen;
+	
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* HighlightedPlaneYellow;
-
-
-	
 
 };
