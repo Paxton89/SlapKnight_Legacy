@@ -58,7 +58,7 @@ void ABaseUnit::CenterOnTile() // Finds a tile underneath to move to and ocuppy.
 {
 	FHitResult Hit;
 	UKismetSystemLibrary::LineTraceSingle(GetWorld(), GetActorLocation(), GetActorLocation() + GetActorUpVector() * -50, UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::ForOneFrame, Hit, true);
-	if(Hit.bBlockingHit)
+	if(Hit.bBlockingHit) //If RayCast hit, Set Unit position to TargetToMove
 	{
 		auto CurrentTile = Cast<ABaseTile>(Hit.Actor);
 		SetActorLocation(CurrentTile->TargetToMove->GetComponentLocation());
