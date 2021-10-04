@@ -75,11 +75,6 @@ void ABaseUnit::Move() // This lerps the current direction to the desired positi
 {
 	CurrentLocation = GetActorLocation();
 	SetActorLocation(FMath::Lerp(CurrentLocation, TargetLocation,0.03));
-	if(CurrentLocation == TargetLocation)
-	{
-		CenterOnTile();
-		UE_LOG(LogTemp, Log, TEXT("Location Reached"));
-	}
 }
 
 void ABaseUnit::UpdateMaterial() // Updates the material of the units to the one of its team.

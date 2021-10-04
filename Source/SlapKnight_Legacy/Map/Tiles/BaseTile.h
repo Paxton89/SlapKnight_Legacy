@@ -37,23 +37,30 @@ public:
 	bool legalTile;
 	bool dificultTerrain;
 
-	FVector pos;
 	ABaseUnit* CurrentUnit;
+	
+	UPROPERTY(EditAnywhere)
+	FVector pos;
+	UPROPERTY(EditAnywhere)
 	USceneComponent* TargetToMove;
+
 
 protected:
 	virtual void BeginPlay() override;
 
 	TArray<ABaseTile*> neighbours;
 	ASlapKnight_LegacyGameModeBase* gameMode;
+	
+	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* Mesh;
 
-	
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* Box;
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* HighlightedPlaneGreen;
+	
+	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* HighlightedPlaneYellow;
 
 };

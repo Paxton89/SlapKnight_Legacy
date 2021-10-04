@@ -9,12 +9,13 @@
 ABaseTile::ABaseTile() // Creates the root, the targetToMove that is the position where units will move to and it creates 2 planes used for highlighting.
 {
 	PrimaryActorTick.bCanEverTick = true;
-	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
-	Box->SetCollisionProfileName("BlockAllDynamic");
-	RootComponent = Box;
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	Mesh->SetupAttachment(RootComponent);
 	Mesh->SetCollisionProfileName("NoCollision");
+	Mesh->SetupAttachment(RootComponent);
+	RootComponent = Mesh;
+	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
+	Box->SetupAttachment(RootComponent);
+	Box->SetCollisionProfileName("BlockAllDynamic");
 	HighlightedPlaneGreen = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("highlightGreen"));
 	HighlightedPlaneYellow = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("highlightYellow"));
 	HighlightedPlaneGreen->SetupAttachment(RootComponent);

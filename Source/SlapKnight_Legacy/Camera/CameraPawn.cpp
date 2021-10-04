@@ -78,8 +78,12 @@ void ACameraPawn::LeftClick()
 	if (gameMode->currentTile != nullptr) // If a tile is currently selected, it deselects it.
 		gameMode->currentTile->DeSelectTile();
 
-	if ( HitTile->CurrentUnit != nullptr) // If the clicked tile has a unit, it will select the clicked tile as the new currectly selected tile.
+	if ( HitTile != nullptr && HitTile->CurrentUnit != nullptr) // If the clicked tile has a unit, it will select the clicked tile as the new currectly selected tile.
 		SetAsCurrentSelectedTile(HitTile);
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("Tile is not selectable"));
+	}
 }
 
 void ACameraPawn::SendUnitToThisTile(ABaseUnit* unit, ABaseTile* newTile, ABaseTile* oldTile)
