@@ -10,12 +10,11 @@ ABaseTile::ABaseTile() // Creates the root, the targetToMove that is the positio
 {
 	PrimaryActorTick.bCanEverTick = true;
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	Mesh->SetCollisionProfileName("NoCollision");
-	Mesh->SetupAttachment(RootComponent);
+	Mesh->SetCollisionProfileName("BlockAllDynamic");
 	RootComponent = Mesh;
-	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
-	Box->SetupAttachment(RootComponent);
-	Box->SetCollisionProfileName("BlockAllDynamic");
+	//Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
+	//Box->SetupAttachment(RootComponent);
+	//Box->SetCollisionProfileName("BlockAllDynamic");
 	HighlightedPlaneGreen = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("highlightGreen"));
 	HighlightedPlaneYellow = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("highlightYellow"));
 	HighlightedPlaneGreen->SetupAttachment(RootComponent);
