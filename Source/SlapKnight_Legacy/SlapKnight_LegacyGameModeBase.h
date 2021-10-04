@@ -20,7 +20,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	ABaseTile* currentTile;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool teamBlue;
 
 	UPROPERTY(VisibleAnywhere)

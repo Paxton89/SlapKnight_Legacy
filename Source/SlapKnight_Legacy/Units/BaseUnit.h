@@ -28,6 +28,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	int StaminaMax = 30;
 
+	UFUNCTION(BlueprintCallable)
 	void NewRoundReset();
 	void Die();
 	void ReciveDamage(int damage);
