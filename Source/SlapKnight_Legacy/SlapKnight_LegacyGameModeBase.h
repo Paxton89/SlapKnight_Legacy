@@ -12,7 +12,6 @@ UCLASS()
 class SLAPKNIGHT_LEGACY_API ASlapKnight_LegacyGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
 
 public:
 
@@ -27,7 +26,6 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TArray<ABaseTile*> allTiles;
 	
-
 protected:
 	ASlapKnight_LegacyGameModeBase();
 
@@ -36,7 +34,6 @@ protected:
 	TArray<AActor*> allActorTiles;
 
 	virtual void BeginPlay() override;
-
 
 };
 

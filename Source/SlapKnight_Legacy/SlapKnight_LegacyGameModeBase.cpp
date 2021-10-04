@@ -7,13 +7,9 @@
 
 ASlapKnight_LegacyGameModeBase::ASlapKnight_LegacyGameModeBase()
 {
-	//tileManager = CreateDefaultSubobject<UTileManager>(TEXT("tileManager"));
-
-
-
 }
 
-void ASlapKnight_LegacyGameModeBase::BeginPlay()
+void ASlapKnight_LegacyGameModeBase::BeginPlay() // This makes a list of all all already casted tiles and assignes them a position.
 {
 	Super::BeginPlay();
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABaseTile::StaticClass(), allActorTiles);
@@ -24,12 +20,11 @@ void ASlapKnight_LegacyGameModeBase::BeginPlay()
 		Cast<ABaseTile>(tile)->pos.X = -x;
 		Cast<ABaseTile>(tile)->pos.Y = -y;
 		allTiles.Add(Cast<ABaseTile>(tile));
-		Cast<ABaseTile>(tile)->tileId = allTiles.Num() - 1;
+		Cast<ABaseTile>(tile)->TileId = allTiles.Num() - 1;
 	}
 	playerController = GetWorld()->GetFirstPlayerController();
 	playerController->bShowMouseCursor = true;
 }
-
 
 APlayerController* ASlapKnight_LegacyGameModeBase::GetPlayerController()
 {

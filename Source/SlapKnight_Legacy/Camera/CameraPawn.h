@@ -1,5 +1,3 @@
-//J
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -8,6 +6,7 @@
 
 class UCameraComponent;
 class ABaseTile;
+class ABaseUnit;
 class USceneComponent;
 class ASlapKnight_LegacyGameModeBase;
 class UTileManager;
@@ -47,7 +46,9 @@ protected:
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 	void LeftClick();
+	void SendUnitToThisTile(ABaseUnit* unit, ABaseTile* newTile, ABaseTile* oldTile);
+	void SetAsCurrentSelectedTile(ABaseTile* tile);
 	void Rotate(float Value);
-	void MouseHoverOverTile();
+	void MouseHoverOverTile(float Value);
 	
 };

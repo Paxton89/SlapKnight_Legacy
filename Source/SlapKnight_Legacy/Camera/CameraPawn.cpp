@@ -1,8 +1,7 @@
-//J
-
 #include "SlapKnight_Legacy/Camera/CameraPawn.h"
 #include "Components/SceneComponent.h"
 #include "Camera/CameraComponent.h"
+#include "../Units/BaseUnit.h"
 #include "../SlapKnight_LegacyGameModeBase.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "SlapKnight_Legacy/Map/Tiles/BaseTile.h"
@@ -16,7 +15,6 @@ ACameraPawn::ACameraPawn() // Establish root.
 	RootComponent = Root;
 }
 
-
 void ACameraPawn::BeginPlay() // Get camera and gamemode for future reference.
 {
 	Super::BeginPlay();
@@ -24,12 +22,10 @@ void ACameraPawn::BeginPlay() // Get camera and gamemode for future reference.
 	MainCam = Cast<UCameraComponent>(GetComponentByClass(UCameraComponent::StaticClass()));
 }
 
-void ACameraPawn::Tick(float DeltaTime) 
+void ACameraPawn::Tick(float DeltaTime) // Currently empty, good :D.
 {
 	Super::Tick(DeltaTime);
-	MouseHoverOverTile();
 }
-
 
 void ACameraPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -37,96 +33,75 @@ void ACameraPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("MoveForward", this, &ACameraPawn::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ACameraPawn::MoveRight);
 	PlayerInputComponent->BindAxis("Rotate", this, &ACameraPawn::Rotate);
+	PlayerInputComponent->BindAxis("MouseMoved", this, &ACameraPawn::MouseHoverOverTile);
 	PlayerInputComponent->BindAction("LeftClick", IE_Pressed, this, &ACameraPawn::LeftClick);
 }
 
-void ACameraPawn::MoveForward(float Value)
+void ACameraPawn::MoveForward(float Value) // Move the camera.
 {
 	MoveY = Value;
 	AddActorLocalOffset(FVector(MoveX, MoveY, 0) * MoveSpeed);
 }
 
-void ACameraPawn::MoveRight(float Value)
+void ACameraPawn::MoveRight(float Value) // Move the camera.
 {
 	MoveX = Value;
 	AddActorLocalOffset(FVector(MoveX, MoveY, 0) * MoveSpeed);
 }
 
-void ACameraPawn::Rotate(float Value)
+void ACameraPawn::Rotate(float Value) // Rotate the camera.
 {
 	FRotator NewRotation = FRotator(0, Value*2 , 0);
 	FQuat QuatRotation = FQuat(NewRotation);
 	AddActorLocalRotation(QuatRotation, false, 0, ETeleportType::None);
 }
 
-void ACameraPawn::MouseHoverOverTile()
+void ACameraPawn::MouseHoverOverTile(float Value) // Only when the mouse moves, a raycast gets the tile under the mouse and activates the hovering info method.
 {
 	FHitResult hit;
-	FHitResult underMouse;
-	gameMode->GetPlayerController()->GetHitResultUnderCursor(ECC_WorldDynamic, false, underMouse);
-	UKismetSystemLibrary::LineTraceSingle(GetWorld(), MainCam->GetComponentLocation(), underMouse.ImpactPoint, UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::None, hit, true);
-	if (!hit.bBlockingHit)
+	gameMode->GetPlayerController()->GetHitResultUnderCursor(ECC_WorldDynamic, false, hit);
+	if (hit.Actor != nullptr && hit.Actor->IsA(ABaseTile::StaticClass()))
 	{
-		return;
-	}
-	if (hit.GetActor()->IsA(ABaseTile::StaticClass()))
-	{
-		ABaseTile* hoveringTile = Cast<ABaseTile>(hit.GetActor());
-		if (hoveringTile->CurrentUnit != nullptr) // if HitTile has a unit, Select this tile
-		{
-			
-			HoveringUnitInfo(hoveringTile, hoveringTile->CurrentUnit->CurrentStamina);
-		}
+		HitTile = Cast<ABaseTile>(hit.Actor);
+		if (HitTile->CurrentUnit != nullptr)
+			HoveringUnitInfo(HitTile, HitTile->CurrentUnit->CurrentStamina);
 	}
 }
 
-void ACameraPawn::LeftClick()
+void ACameraPawn::LeftClick() 
 {
-	FHitResult hit;
-	FHitResult underMouse;
-	gameMode->GetPlayerController()->GetHitResultUnderCursor(ECC_WorldDynamic, false, underMouse);
-	UKismetSystemLibrary::LineTraceSingle(GetWorld(), MainCam->GetComponentLocation(), underMouse.ImpactPoint, UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::ForOneFrame, hit, true);
-
-	bool hitSomething = underMouse.bBlockingHit;
-	if (!hit.bBlockingHit)
+	if ( PairedList.Num() > 0 && HitTile->legalTile ) // Checks if a tile is selected and if the new tile is legal to move to, if so it sends the unit to the new tile.
 	{
-		UE_LOG(LogTemp, Warning, TEXT("hit nothing "));
-		ClickFailUI();//shows troll face on ui for a fraction of a second
+		SendUnitToThisTile(gameMode->currentTile->CurrentUnit, HitTile, gameMode->currentTile);
 		return;
 	}
-	
-	if (hit.GetActor()->IsA(ABaseTile::StaticClass()))
+	if (gameMode->currentTile != nullptr) // If a tile is currently selected, it deselects it.
+		gameMode->currentTile->DeSelectTile();
+
+	if ( HitTile != nullptr && HitTile->CurrentUnit != nullptr) // If the clicked tile has a unit, it will select the clicked tile as the new currectly selected tile.
+		SetAsCurrentSelectedTile(HitTile);
+	else
 	{
-		HitTile = Cast<ABaseTile>(hit.GetActor());
-		if(PairedList.Num() > 0)
-		{
-			if (HitTile->CurrentUnit == nullptr && HitTile->legalTile) // if HitTile has a unit, Select this tile
-			{
-				gameMode->currentTile->CurrentUnit->SetTargetTile(HitTile);
-				gameMode->currentTile->CurrentUnit->CurrentStamina -= HitTile->costToMove;
-				gameMode->currentTile->DeSelectTile();
-				HitTile->CurrentUnit = gameMode->currentTile->CurrentUnit;
-				gameMode->currentTile->CurrentUnit = nullptr;
-				PairedList.Empty();
-				return;
-			}
-
-		}
-		if (gameMode->currentTile != nullptr) // if CurrentTile has a value
-		{
-			gameMode->currentTile->DeSelectTile();
-			
-		}
-		if(HitTile->CurrentUnit != nullptr) // if HitTile has a unit, Select this tile
-		{
-			PairedList.Add(HitTile);
-			HitTile->SelectTile();
-			ShowUnitStatsUI(HitTile);
-		}	
-
-		UE_LOG(LogTemp, Warning, TEXT("Hit Tile id = %d"),HitTile->tileId);
+		UE_LOG(LogTemp, Log, TEXT("Tile is not selectable"));
 	}
+}
 
+void ACameraPawn::SendUnitToThisTile(ABaseUnit* unit, ABaseTile* newTile, ABaseTile* oldTile)
+{
+	PairedList.Empty(); // Empties List so that a new pair can be selected.
+	unit->SetTargetTile(newTile); // Tells the unit to change tiles and move there.
+	unit->CurrentStamina -= newTile->costToMove; // Reduces stamina by tile set amount.
+	newTile->CurrentUnit = unit; // Adds the unit into the new tile.
+	oldTile->CurrentUnit = nullptr; // Removes the unit from the old tile.
+	oldTile->DeSelectTile(); // De-selects old tile
+	SetAsCurrentSelectedTile(newTile);// Selects new tile.
+}
+
+void ACameraPawn::SetAsCurrentSelectedTile(ABaseTile* tile)
+{
+	PairedList.Add(tile); // Adds tile to paired list, this can only happen if its empty, ensuring the next click is a neighbour or another unit tile.
+	tile->SelectTile(); // Tells the tile to change variables to selected.
+	ShowUnitStatsUI(tile); // Its suppose to display something or another in UI as a response to having selected a new tile.
 }
 
 
