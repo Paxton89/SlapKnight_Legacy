@@ -58,6 +58,18 @@ int ABaseTile::GetUnitStamina() // Returns the stamina of the unit standing on t
 	return CurrentUnit->CurrentStamina;
 }
 
+void ABaseTile::RiseTile(int offset)
+{
+	FVector risenPos = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + offset);
+	SetActorLocation(risenPos);
+	if (CurrentUnit)
+	{
+		FVector risenPos2 = FVector(CurrentUnit->GetActorLocation().X, CurrentUnit->GetActorLocation().Y, CurrentUnit->GetActorLocation().Z + offset);
+		CurrentUnit->SetActorLocation(risenPos2);
+	}
+
+}
+
 void ABaseTile::SelectTile() // If this tile has a unit on top then it becomes selected, highlighted and becomes the currentTile of the gameMode.
 {
 	if (CurrentUnit && Cast<ABaseUnit>(CurrentUnit)->teamBlue == gameMode->teamBlue)

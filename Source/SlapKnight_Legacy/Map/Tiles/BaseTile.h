@@ -28,6 +28,7 @@ public:
 	void UpdateNeighbours();
 	void ActivateNeighbours(bool activate);
 	int GetUnitStamina();
+	void RiseTile(int offset);
 
 	int TileId;
 	int costToMove = 10;
@@ -36,6 +37,7 @@ public:
 	bool affordable;
 	bool legalTile;
 	bool dificultTerrain;
+	bool hovered;
 
 	ABaseUnit* CurrentUnit;
 	
@@ -49,6 +51,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	TArray<ABaseTile*> neighbours;
+
 	ASlapKnight_LegacyGameModeBase* gameMode;
 	
 	UPROPERTY(EditAnywhere)

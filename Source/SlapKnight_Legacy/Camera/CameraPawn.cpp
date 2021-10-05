@@ -60,11 +60,21 @@ void ACameraPawn::MouseHoverOverTile(float Value) // Only when the mouse moves, 
 {
 	FHitResult hit;
 	gameMode->GetPlayerController()->GetHitResultUnderCursor(ECC_WorldDynamic, false, hit);
-	if (hit.Actor != nullptr && hit.Actor->IsA(ABaseTile::StaticClass()))
+	if (hit.Actor != nullptr && hit.Actor->IsA(ABaseTile::StaticClass()) )
 	{
-		HitTile = Cast<ABaseTile>(hit.Actor);
+
+		if (Cast<ABaseTile>(hit.Actor) != HitTile)
+		{
+			if (HitTile != nullptr)
+				HitTile->RiseTile(-10);
+			HitTile = Cast<ABaseTile>(hit.Actor);
+			HitTile->RiseTile(10);
+		}
+		if (HitTile != nullptr)
+		{
 		if (HitTile->CurrentUnit != nullptr)
 			HoveringUnitInfo(HitTile, HitTile->CurrentUnit->CurrentStamina);
+		}
 	}
 }
 
