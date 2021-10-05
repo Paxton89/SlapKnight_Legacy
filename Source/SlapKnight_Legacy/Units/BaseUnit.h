@@ -18,14 +18,14 @@ public:
 	ABaseUnit();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
-	UPROPERTY(EditAnywhere)
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int CurrentHealth;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int CurrentStamina;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool teamBlue;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int StaminaMax = 30;
 
 	UFUNCTION(BlueprintCallable)
