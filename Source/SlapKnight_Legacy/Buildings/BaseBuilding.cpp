@@ -21,31 +21,31 @@ void ABaseBuilding::BeginPlay()
 	Super::BeginPlay();
 	IgnoreList.Add(this);
 	CollectAdjacentTiles();
-	//DrawDebugSphere(GetWorld(), AdjacentTiles[0]->GetActorLocation() + AdjacentTiles[0]->GetActorUpVector() * 40, 20, 18, FColor::Orange, true, 1, 0, 2 );
 }
 
 void ABaseBuilding::CollectAdjacentTiles()
 {
-	auto HalfSize = (GetComponentsBoundingBox().GetSize() * 0.5) - 50 ;
-	auto WholeSize = GetComponentsBoundingBox().GetSize() * 0.5 + 50;
+	auto HalfSize = (GetComponentsBoundingBox().GetSize() * 0.5) - 50; // - Half the size of a tile
+	auto WholeSize = GetComponentsBoundingBox().GetSize() * 0.5 + 50; // + Half the size of a tile
 	TArray<FHitResult> Hits;
 	TArray<FHitResult> NeighbourHits;
 	UKismetSystemLibrary::BoxTraceMulti(GetWorld(), GetActorLocation(), GetActorLocation() + GetActorUpVector() * -100, HalfSize, GetActorRotation(), UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::Persistent, Hits, true, FColor::Yellow);
 	UKismetSystemLibrary::BoxTraceMulti(GetWorld(), GetActorLocation(), GetActorLocation() + GetActorUpVector() * -100, WholeSize, GetActorRotation(), UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::Persistent, NeighbourHits, true, FColor::Orange);
 
-	for (auto Tile : Hits) // Find tiles covered by building
+	for (auto Tile : Hits)
 	{
 		auto CoveredTile = Cast<ABaseTile>(Tile.Actor);
 		BuildingTiles.AddUnique(CoveredTile);
-	}
-	for (auto Tile : NeighbourHits) // Find surrounding tiles 
+	} // Find tiles covered by building
+	for (auto Tile : NeighbourHits)
 	{
 		auto Neighbour = Cast<ABaseTile>(Tile.Actor);
 		if(!BuildingTiles.Contains(Neighbour))
 		{
 			AdjacentTiles.Add(Neighbour);
 		}
-	}
+	} // Find surrounding tiles
+	
 	UE_LOG(LogTemp, Warning, TEXT("Building covers %i Tiles"), BuildingTiles.Num());
 	UE_LOG(LogTemp, Warning, TEXT("AdjacentTiles %i"), AdjacentTiles.Num());
 }
@@ -62,13 +62,13 @@ void ABaseBuilding::SpawnUnit()
 		UE_LOG(LogTemp, Warning, TEXT("NO FREE TILES TO SPAWN UNIT!"));
 		index = 0;
 		return;
-	}
+	} //Check if index is bigger than number of availible tiles, reset index & return
 	if(AdjacentTiles[index]->CurrentUnit != nullptr)
 	{
 		index++;
-		UE_LOG(LogTemp, Warning, TEXT("Tile occupied! trying next tile"));
+		UE_LOG(LogTemp, Log, TEXT("Tile occupied! trying next tile"));
 		SpawnUnit();
-	}
+	} //If Checked tile is not free, increase index and run function again
 	else
 	{
 		ABaseUnit* NewUnit = Cast<ABaseUnit>(GetWorld()->SpawnActor(SpawnableUnit));
@@ -78,6 +78,6 @@ void ABaseBuilding::SpawnUnit()
 		NewUnit->UpdateMaterial();
 		NewUnit->CenterOnTile();
 		index = 0;
-	}
+	} // Spawn Unit, Reset Index.
 }
 
