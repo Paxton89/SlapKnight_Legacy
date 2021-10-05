@@ -17,13 +17,13 @@ public:
 
 	APlayerController* GetPlayerController();
 
-	UPROPERTY(VisibleAnywhere)
-	ABaseTile* currentTile;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int currentTile;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool teamBlue;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<ABaseTile*> allTiles;
 	
 protected:

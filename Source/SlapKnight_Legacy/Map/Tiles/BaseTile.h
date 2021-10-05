@@ -24,10 +24,12 @@ public:
 	void IsLegalTile(bool legal);
 	bool GetUnitTeam();
 	void SelectTile();
+	UFUNCTION(BlueprintCallable)
 	void DeSelectTile();
 	void UpdateNeighbours();
 	void ActivateNeighbours(bool activate);
 	int GetUnitStamina();
+	ABaseTile* Tile(int TileId);
 	void RiseTile(int offset);
 
 	int TileId;
@@ -50,7 +52,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	TArray<ABaseTile*> neighbours;
+	TArray<int> neighbours;
 
 	ASlapKnight_LegacyGameModeBase* gameMode;
 	
