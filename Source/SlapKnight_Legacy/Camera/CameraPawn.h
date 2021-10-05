@@ -20,35 +20,39 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ClickFailUI();
 	UFUNCTION(BlueprintImplementableEvent)
-	void HoveringUnitInfo(ABaseTile* tile, int stamina);
+	void HoveringUnitInfo(int tile, int stamina);
 	UFUNCTION(BlueprintImplementableEvent)
-	void ShowUnitStatsUI(ABaseTile* tile);
+	void ShowUnitStatsUI(int tile);
 
-protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UCameraComponent* MainCam;
 	USceneComponent* Root;
-	ABaseTile* HitTile;
+	int HitTile;
 	
 	UPROPERTY(EditAnywhere)
 	float MoveSpeed;
 	float MoveX;
 	float MoveY;
 	TArray<AActor*> IgnoreList;
-	TArray<ABaseTile*> PairedList;
-	TArray<ABaseTile*> neighbours;
+	TArray<int> PairedList;
+	TArray<int> neighbours;
 	
 	ASlapKnight_LegacyGameModeBase* gameMode;
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 	void LeftClick();
-	void SendUnitToThisTile(ABaseUnit* unit, ABaseTile* newTile, ABaseTile* oldTile);
-	void SetAsCurrentSelectedTile(ABaseTile* tile);
+	ABaseTile* Tile(int TileId);
+	//void DeselectTile();
+	void SendUnitToThisTile(ABaseUnit* unit, int newTile, int oldTile);
+	void SetAsCurrentSelectedTile(int tile);
 	void Rotate(float Value);
 	void MouseHoverOverTile(float Value);
-	
+
+protected:
+
+
 };

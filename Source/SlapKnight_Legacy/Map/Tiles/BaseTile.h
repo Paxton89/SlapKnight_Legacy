@@ -24,10 +24,13 @@ public:
 	void IsLegalTile(bool legal);
 	bool GetUnitTeam();
 	void SelectTile();
+	UFUNCTION(BlueprintCallable)
 	void DeSelectTile();
 	void UpdateNeighbours();
 	void ActivateNeighbours(bool activate);
 	int GetUnitStamina();
+	ABaseTile* Tile(int TileId);
+	void RiseTile(int offset);
 
 	int TileId;
 	int costToMove = 10;
@@ -36,6 +39,7 @@ public:
 	bool affordable;
 	bool legalTile;
 	bool dificultTerrain;
+	bool hovered;
 
 	ABaseUnit* CurrentUnit;
 	
@@ -43,10 +47,12 @@ public:
 	FVector pos;
 	UPROPERTY(EditAnywhere)
 	USceneComponent* TargetToMove;
-	UPROPERTY()
-	TArray<ABaseTile*> neighbours;
+
+
 protected:
 	virtual void BeginPlay() override;
+
+	TArray<int> neighbours;
 
 	ASlapKnight_LegacyGameModeBase* gameMode;
 	

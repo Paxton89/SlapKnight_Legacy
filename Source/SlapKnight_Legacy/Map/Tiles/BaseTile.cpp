@@ -37,7 +37,7 @@ void ABaseTile::Tick(float DeltaTime) // Currently empty, good :D.
 
 void ABaseTile::EstablishTileLegality() // Checks if this tile is empty of units and if the current unit can afford to move here, is so, its a legal tile to move to.
 {
-	bool hasEnoughStamina = !CurrentUnit && gameMode->currentTile->CurrentUnit->CurrentStamina >= costToMove;
+	bool hasEnoughStamina = !CurrentUnit && Tile(gameMode->currentTile)->CurrentUnit->CurrentStamina >= costToMove;
 	IsLegalTile(hasEnoughStamina);
 }
 
@@ -58,12 +58,24 @@ int ABaseTile::GetUnitStamina() // Returns the stamina of the unit standing on t
 	return CurrentUnit->CurrentStamina;
 }
 
+void ABaseTile::RiseTile(int offset)
+{
+	FVector risenPos = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + offset);
+	SetActorLocation(risenPos);
+	if (CurrentUnit)
+	{
+		FVector risenPos2 = FVector(CurrentUnit->GetActorLocation().X, CurrentUnit->GetActorLocation().Y, CurrentUnit->GetActorLocation().Z + offset);
+		CurrentUnit->SetActorLocation(risenPos2);
+	}
+
+}
+
 void ABaseTile::SelectTile() // If this tile has a unit on top then it becomes selected, highlighted and becomes the currentTile of the gameMode.
 {
 	if (CurrentUnit && Cast<ABaseUnit>(CurrentUnit)->teamBlue == gameMode->teamBlue)
 	{
 		HighlightedPlaneYellow->SetVisibility(true);
-		gameMode->currentTile = this; 
+		gameMode->currentTile = TileId; 
 		selected = true;
 		ActivateNeighbours(true);
 	}
@@ -86,21 +98,27 @@ void ABaseTile::UpdateNeighbours() // Makes an array of the 4 neighbouring tiles
 		bool upTile = tile->pos.X == pos.X && tile->pos.Y == pos.Y + 1;
 		bool downTile = tile->pos.X == pos.X && tile->pos.Y == pos.Y - 1;
 		if ( upTile || downTile || rightTile || leftTile)
-			neighbours.Add(tile);
+			neighbours.Add(tile->TileId);
 	}
 }
 
 void ABaseTile::ActivateNeighbours(bool activate)// This activates or deactivates neighbouring tiles, also deals with their highlight.
 {
-	for (ABaseTile* tile : neighbours)
+	for (int tile : neighbours)
 	{
-		tile->activated = activate;
-		tile->HighlightedPlaneGreen->SetVisibility(activate);
+		
+		Tile(tile)->activated = activate;
+		Tile(tile)->HighlightedPlaneGreen->SetVisibility(activate);
 		if (activate)
-			tile->EstablishTileLegality();
+			Tile(tile)->EstablishTileLegality();
 		else
-			tile->IsLegalTile(false);
+			Tile(tile)->IsLegalTile(false);
 	}
 }
 
+
+ABaseTile* ABaseTile::Tile(int Tile)
+{
+	return gameMode->allTiles[Tile];
+}
 
