@@ -19,12 +19,22 @@ public:	//Variables
 	UPROPERTY(EditAnywhere)
 	int BuildCost;
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<ABaseUnit> Unit;
+	bool TeamBlue = false;
+
+	TArray<ABaseTile*> BuildingTiles;
 	
 protected:
 	virtual void BeginPlay() override;
-	TArray<ABaseTile*> AdjacentTiles;
 	
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* Mesh;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ABaseUnit> SpawnableUnit;
+
+	int index = 0;
+	TArray<AActor*> IgnoreList;
+	TArray<ABaseTile*> AdjacentTiles;
+	void CollectAdjacentTiles();
 
 public:	//Functions
 	virtual void Tick(float DeltaTime) override;

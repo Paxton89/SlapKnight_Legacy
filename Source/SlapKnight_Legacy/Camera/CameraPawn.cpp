@@ -4,6 +4,7 @@
 #include "../Units/BaseUnit.h"
 #include "../SlapKnight_LegacyGameModeBase.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "SlapKnight_Legacy/Buildings/BaseBuilding.h"
 #include "SlapKnight_Legacy/Map/Tiles/BaseTile.h"
 #include "SlapKnight_Legacy/Map/Tiles/TileManager.h"
 #include "SlapKnight_Legacy/Units/BaseUnit.h"
@@ -80,6 +81,17 @@ void ACameraPawn::MouseHoverOverTile(float Value) // Only when the mouse moves, 
 
 void ACameraPawn::LeftClick() 
 {
+	FHitResult UnderMouse;
+	gameMode->GetPlayerController()->GetHitResultUnderCursor(ECC_WorldDynamic, false, UnderMouse);
+	if(UnderMouse.bBlockingHit && UnderMouse.Actor->IsA(ABaseBuilding::StaticClass()))
+	{
+		auto HitBuilding = Cast<ABaseBuilding>(UnderMouse.Actor);
+		if(HitBuilding->TeamBlue == gameMode->teamBlue)
+		{
+			HitBuilding->SpawnUnit();
+		}
+	}
+	
 	if ( PairedList.Num() > 0 && Tile(HitTile)->legalTile ) // Checks if a tile is selected and if the new tile is legal to move to, if so it sends the unit to the new tile.
 	{
 		SendUnitToThisTile(Tile(gameMode->currentTile)->CurrentUnit, HitTile, gameMode->currentTile);
@@ -87,7 +99,6 @@ void ACameraPawn::LeftClick()
 	}
 	if (Tile(gameMode->currentTile) != nullptr) // If a tile is currently selected, it deselects it.
 		Tile(gameMode->currentTile)->DeSelectTile();
-
 	if (gameMode->allTiles[HitTile] != nullptr && gameMode->allTiles[HitTile]->CurrentUnit != nullptr) // If the clicked tile has a unit, it will select the clicked tile as the new currectly selected tile.
 		SetAsCurrentSelectedTile(HitTile);
 	else

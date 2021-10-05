@@ -35,6 +35,7 @@ public:
 	void CenterOnTile();
 	void SetTargetTile(ABaseTile* TargetTile);
 	void Move();
+	void UpdateMaterial();
 	
 protected:
 	virtual void BeginPlay() override;
@@ -59,5 +60,4 @@ protected:
 	FVector TargetLocation;
 	FVector CurrentLocation;
 
-	void UpdateMaterial();
 };
