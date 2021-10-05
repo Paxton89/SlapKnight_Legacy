@@ -20,7 +20,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ClickFailUI();
 	UFUNCTION(BlueprintImplementableEvent)
-	void HoveringUnitInfo(int tile, int stamina);
+	void HoveringUnitInfo(int tile, int stamina, int health);
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowUnitStatsUI(int tile);
 

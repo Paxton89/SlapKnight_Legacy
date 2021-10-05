@@ -34,6 +34,7 @@ public:
 
 	int TileId;
 	int costToMove = 10;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool selected;
 	bool activated;
 	bool affordable;
@@ -41,11 +42,11 @@ public:
 	bool dificultTerrain;
 	bool hovered;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	ABaseUnit* CurrentUnit;
-	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FVector pos;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	USceneComponent* TargetToMove;
 
 

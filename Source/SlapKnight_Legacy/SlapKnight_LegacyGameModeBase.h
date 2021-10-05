@@ -19,6 +19,12 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int currentTile;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int DivineValueBlue = 50;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int DivineValueRed = 50;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool teamBlue;

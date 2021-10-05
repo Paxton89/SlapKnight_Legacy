@@ -73,8 +73,8 @@ void ACameraPawn::MouseHoverOverTile(float Value) // Only when the mouse moves, 
 		}
 		if (Tile(HitTile) != nullptr)
 		{
-		if (Tile(HitTile)->CurrentUnit != nullptr)
-			HoveringUnitInfo(HitTile, Tile(HitTile)->CurrentUnit->CurrentStamina);
+			//if (Tile(HitTile)->CurrentUnit != nullptr)
+			//	HoveringUnitInfo(HitTile, Tile(HitTile)->CurrentUnit->CurrentStamina, Tile(HitTile)->CurrentUnit->CurrentHealth);
 		}
 	}
 }
