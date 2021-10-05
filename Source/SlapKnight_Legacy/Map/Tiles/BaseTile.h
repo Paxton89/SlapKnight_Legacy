@@ -43,12 +43,11 @@ public:
 	FVector pos;
 	UPROPERTY(EditAnywhere)
 	USceneComponent* TargetToMove;
-
-
+	UPROPERTY()
+	TArray<ABaseTile*> neighbours;
 protected:
 	virtual void BeginPlay() override;
 
-	TArray<ABaseTile*> neighbours;
 	ASlapKnight_LegacyGameModeBase* gameMode;
 	
 	UPROPERTY(EditAnywhere)
