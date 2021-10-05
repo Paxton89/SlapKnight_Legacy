@@ -22,7 +22,6 @@ void ABaseBuilding::BeginPlay()
 	IgnoreList.Add(this);
 	CollectAdjacentTiles();
 	//DrawDebugSphere(GetWorld(), AdjacentTiles[0]->GetActorLocation() + AdjacentTiles[0]->GetActorUpVector() * 40, 20, 18, FColor::Orange, true, 1, 0, 2 );
-	SpawnUnit();
 }
 
 void ABaseBuilding::CollectAdjacentTiles()
@@ -58,9 +57,10 @@ void ABaseBuilding::Tick(float DeltaTime)
 
 void ABaseBuilding::SpawnUnit()
 {
-	if(index >= AdjacentTiles.Num() - 1)
+	if(index >= AdjacentTiles.Num())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("NO FREE TILES TO SPAWN UNIT!"));
+		index = 0;
 		return;
 	}
 	if(AdjacentTiles[index]->CurrentUnit != nullptr)
