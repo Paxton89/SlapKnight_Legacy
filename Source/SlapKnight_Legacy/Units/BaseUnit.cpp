@@ -31,6 +31,7 @@ void ABaseUnit::Tick(float DeltaTime)// If not in target position, then it moves
 {
 	Super::Tick(DeltaTime);
 	if (CurrentLocation != TargetLocation ) Move();
+	if (CurrentHealth <= 0) Die();
 }
 
 void ABaseUnit::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -45,13 +46,20 @@ void ABaseUnit::NewRoundReset() // This resets the stamina of this unit at the s
 
 void ABaseUnit::ReciveDamage(int damage) // The units health decreases by the amount of damage and checks if it should die or not by the damage.
 {
-	CurrentHealth -= damage;
-	if (CurrentHealth <= 0) Die();
+	//CurrentHealth -= damage;
 }
 
 void ABaseUnit::Die() // The unit dies.
 {
-	UE_LOG(LogTemp, Log, TEXT("Health is below 0 -- Dying"));
+	FHitResult Hit;
+	UKismetSystemLibrary::LineTraceSingle(GetWorld(), GetActorLocation(), GetActorLocation() + GetActorUpVector() * -50, UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::ForOneFrame, Hit, true);
+	if (Hit.bBlockingHit) //If RayCast hit, Set Unit position to TargetToMove
+	{
+		auto CurrentTile = Cast<ABaseTile>(Hit.Actor);
+		CurrentTile->CurrentUnit = nullptr; 
+		CurrentTile->DeSelectTile();
+		Destroy();
+	}
 }
 
 void ABaseUnit::CenterOnTile() // Finds a tile underneath to move to and ocuppy.

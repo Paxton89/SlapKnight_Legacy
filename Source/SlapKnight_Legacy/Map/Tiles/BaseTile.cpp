@@ -72,12 +72,23 @@ void ABaseTile::RiseTile(int offset)
 
 void ABaseTile::SelectTile() // If this tile has a unit on top then it becomes selected, highlighted and becomes the currentTile of the gameMode.
 {
-	if (CurrentUnit && Cast<ABaseUnit>(CurrentUnit)->teamBlue == gameMode->teamBlue)
+	//if (CurrentUnit && Cast<ABaseUnit>(CurrentUnit)->teamBlue == gameMode->teamBlue)
+	if (CurrentUnit )
 	{
-		HighlightedPlaneYellow->SetVisibility(true);
-		gameMode->currentTile = TileId; 
-		selected = true;
-		ActivateNeighbours(true);
+		if (Cast<ABaseUnit>(CurrentUnit)->teamBlue == gameMode->teamBlue)
+		{
+			HighlightedPlaneYellow->SetVisibility(true);
+			gameMode->currentTile = TileId;
+			selected = true;
+			ActivateNeighbours(true);
+		}
+		else
+		{
+			HighlightedPlaneYellow->SetVisibility(true);
+			gameMode->currentTile = TileId;
+			selected = true;
+		}
+
 	}
 }
 
