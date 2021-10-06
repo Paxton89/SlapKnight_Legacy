@@ -20,7 +20,7 @@ ABaseUnit::ABaseUnit() // Creates a root and a skeletal mesh.
 void ABaseUnit::BeginPlay() // Sets this Units basic stats to the max, gives it the correct color and sets it on the tile below.
 {
 	Super::BeginPlay();
-	CurrentStamina = StaminaMax;
+	//CurrentStamina = StaminaMax;
 	CurrentHealth = HealthMax;
 	IgnoreList.Add(this);
 	CenterOnTile();
