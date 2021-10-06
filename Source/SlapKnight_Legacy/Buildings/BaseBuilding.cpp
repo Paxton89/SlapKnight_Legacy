@@ -2,7 +2,6 @@
 
 
 #include "SlapKnight_Legacy//Buildings/BaseBuilding.h"
-
 #include "DrawDebugHelpers.h"
 #include "SlapKnight_Legacy/Map/Tiles/BaseTile.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -25,26 +24,26 @@ void ABaseBuilding::BeginPlay()
 
 void ABaseBuilding::CollectAdjacentTiles()
 {
-	auto HalfSize = (GetComponentsBoundingBox().GetSize() * 0.5) - 50; // - Half the size of a tile
-	auto WholeSize = GetComponentsBoundingBox().GetSize() * 0.5 + 50; // + Half the size of a tile
-	TArray<FHitResult> Hits;
-	TArray<FHitResult> NeighbourHits;
-	UKismetSystemLibrary::BoxTraceMulti(GetWorld(), GetActorLocation(), GetActorLocation() + GetActorUpVector() * -100, HalfSize, GetActorRotation(), UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::Persistent, Hits, true, FColor::Yellow);
-	UKismetSystemLibrary::BoxTraceMulti(GetWorld(), GetActorLocation(), GetActorLocation() + GetActorUpVector() * -100, WholeSize, GetActorRotation(), UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::Persistent, NeighbourHits, true, FColor::Orange);
+	auto InnerBox = (GetComponentsBoundingBox().GetSize() * 0.5) - 50; // Will capture the tiles under the building
+	auto OuterBox = GetComponentsBoundingBox().GetSize() * 0.5 + 50; //Will capture the tiles adjacent to the building
+	TArray<FHitResult> InnerBoxHits;
+	TArray<FHitResult> OuterBoxHits;
+	UKismetSystemLibrary::BoxTraceMulti(GetWorld(), GetActorLocation(), GetActorLocation() + GetActorUpVector() * -100, InnerBox, GetActorRotation(), UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::Persistent, InnerBoxHits, true, FColor::Yellow);
+	UKismetSystemLibrary::BoxTraceMulti(GetWorld(), GetActorLocation(), GetActorLocation() + GetActorUpVector() * -100, OuterBox, GetActorRotation(), UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::Persistent, OuterBoxHits, true, FColor::Orange);
 
-	for (auto Tile : Hits)
+	for (auto Tile : InnerBoxHits) // Adds Tiles hit by InnerBox to an Array.
 	{
-		auto CoveredTile = Cast<ABaseTile>(Tile.Actor);
-		BuildingTiles.AddUnique(CoveredTile);
-	} // Find tiles covered by building
-	for (auto Tile : NeighbourHits)
+		auto CurrentTile = Cast<ABaseTile>(Tile.Actor);
+		BuildingTiles.AddUnique(CurrentTile);
+	}
+	for (auto Tile : OuterBoxHits) // // Adds Tiles hit by OuterBox to an Array. (unless they are directly under the building)
 	{
-		auto Neighbour = Cast<ABaseTile>(Tile.Actor);
-		if(!BuildingTiles.Contains(Neighbour))
+		auto AdjacentTile = Cast<ABaseTile>(Tile.Actor);
+		if(!BuildingTiles.Contains(AdjacentTile))
 		{
-			AdjacentTiles.Add(Neighbour);
+			AdjacentTiles.Add(AdjacentTile);
 		}
-	} // Find surrounding tiles
+	}
 	
 	UE_LOG(LogTemp, Warning, TEXT("Building covers %i Tiles"), BuildingTiles.Num());
 	UE_LOG(LogTemp, Warning, TEXT("AdjacentTiles %i"), AdjacentTiles.Num());
@@ -57,19 +56,18 @@ void ABaseBuilding::Tick(float DeltaTime)
 
 void ABaseBuilding::SpawnUnit()
 {
-	if(index >= AdjacentTiles.Num())
+	if(index >= AdjacentTiles.Num()) //Index is bigger than available tiles, No more room to spawn units. Reset Index & Return
 	{
-		UE_LOG(LogTemp, Warning, TEXT("NO FREE TILES TO SPAWN UNIT!"));
+		UE_LOG(LogTemp, Warning, TEXT("No free tiles! Cannot spawn unit"));
 		index = 0;
 		return;
-	} //Check if index is bigger than number of availible tiles, reset index & return
-	if(AdjacentTiles[index]->CurrentUnit != nullptr)
+	}
+	if(AdjacentTiles[index]->CurrentUnit != nullptr) //Checked if tile already has a Unit. If it does, increase index and run function again.
 	{
 		index++;
-		UE_LOG(LogTemp, Log, TEXT("Tile occupied! trying next tile"));
 		SpawnUnit();
-	} //If Checked tile is not free, increase index and run function again
-	else
+	}
+	else // There is a free tile! Spawn Unit. Reset Index.
 	{
 		ABaseUnit* NewUnit = Cast<ABaseUnit>(GetWorld()->SpawnActor(SpawnableUnit));
 		NewUnit->SetActorLocation(AdjacentTiles[index]->GetActorLocation());
@@ -78,6 +76,6 @@ void ABaseBuilding::SpawnUnit()
 		NewUnit->UpdateMaterial();
 		NewUnit->CenterOnTile();
 		index = 0;
-	} // Spawn Unit, Reset Index.
+	}
 }
 
