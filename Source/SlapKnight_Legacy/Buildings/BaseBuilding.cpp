@@ -31,17 +31,17 @@ void ABaseBuilding::CollectAdjacentTiles()
 	UKismetSystemLibrary::BoxTraceMulti(GetWorld(), GetActorLocation(), GetActorLocation() + GetActorUpVector() * -100, InnerBox, GetActorRotation(), UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::Persistent, InnerBoxHits, true, FColor::Yellow);
 	UKismetSystemLibrary::BoxTraceMulti(GetWorld(), GetActorLocation(), GetActorLocation() + GetActorUpVector() * -100, OuterBox, GetActorRotation(), UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::Persistent, OuterBoxHits, true, FColor::Orange);
 
-	for (auto Tile : InnerBoxHits) // Adds Tiles hit by InnerBox to an Array.
+	for (auto HitByInner : InnerBoxHits) // Adds Tiles hit by InnerBox to an Array.
 	{
-		auto CurrentTile = Cast<ABaseTile>(Tile.Actor);
+		auto CurrentTile = Cast<ABaseTile>(HitByInner.Actor);
 		BuildingTiles.AddUnique(CurrentTile);
 	}
-	for (auto Tile : OuterBoxHits) // // Adds Tiles hit by OuterBox to an Array. (unless they are directly under the building)
+	for (auto HitByOuter : OuterBoxHits) // // Adds Tiles hit by OuterBox to an Array. (unless they are directly under the building)
 	{
-		auto AdjacentTile = Cast<ABaseTile>(Tile.Actor);
-		if(!BuildingTiles.Contains(AdjacentTile))
+		auto CurrentTile = Cast<ABaseTile>(HitByOuter.Actor);
+		if(!BuildingTiles.Contains(CurrentTile))
 		{
-			AdjacentTiles.Add(AdjacentTile);
+			AdjacentTiles.Add(CurrentTile);
 		}
 	}
 	

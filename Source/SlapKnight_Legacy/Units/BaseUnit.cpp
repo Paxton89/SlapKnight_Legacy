@@ -53,7 +53,7 @@ void ABaseUnit::Die() // The unit dies.
 {
 	FHitResult Hit;
 	UKismetSystemLibrary::LineTraceSingle(GetWorld(), GetActorLocation(), GetActorLocation() + GetActorUpVector() * -50, UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::ForOneFrame, Hit, true);
-	if (Hit.bBlockingHit) //If RayCast hit, Set Unit position to TargetToMove
+	if (Hit.bBlockingHit)
 	{
 		auto CurrentTile = Cast<ABaseTile>(Hit.Actor);
 		CurrentTile->CurrentUnit = nullptr; 
