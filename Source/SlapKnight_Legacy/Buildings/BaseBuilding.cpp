@@ -71,7 +71,7 @@ void ABaseBuilding::SpawnUnit()
 	{
 		ABaseUnit* NewUnit = Cast<ABaseUnit>(GetWorld()->SpawnActor(SpawnableUnit));
 		NewUnit->SetActorLocation(AdjacentTiles[index]->GetActorLocation());
-		NewUnit->SetActorRotation(GetActorRotation());
+		NewUnit->SetActorRotation(GetActorForwardVector().ToOrientationRotator());
 		NewUnit->teamBlue = TeamBlue;
 		NewUnit->UpdateMaterial();
 		NewUnit->CenterOnTile();
