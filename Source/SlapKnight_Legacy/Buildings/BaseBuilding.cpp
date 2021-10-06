@@ -3,6 +3,7 @@
 
 #include "SlapKnight_Legacy//Buildings/BaseBuilding.h"
 #include "DrawDebugHelpers.h"
+#include "SlapKnight_Legacy/SlapKnight_LegacyGameModeBase.h"
 #include "SlapKnight_Legacy/Map/Tiles/BaseTile.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "SlapKnight_Legacy/Units/BaseUnit.h"
@@ -10,14 +11,17 @@
 ABaseBuilding::ABaseBuilding()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	RootComponent = Root;
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetCollisionProfileName("BlockAllDynamic");
-	RootComponent = Mesh;
+	Mesh->SetupAttachment(RootComponent);
 }
 
 void ABaseBuilding::BeginPlay()
 {
 	Super::BeginPlay();
+	GameMode = Cast<ASlapKnight_LegacyGameModeBase>(GetWorld()->GetAuthGameMode());
 	IgnoreList.Add(this);
 	CollectAdjacentTiles();
 }
@@ -25,12 +29,19 @@ void ABaseBuilding::BeginPlay()
 void ABaseBuilding::CollectAdjacentTiles()
 {
 	auto InnerBox = (GetComponentsBoundingBox().GetSize() * 0.5) - 50; // Will capture the tiles under the building
-	auto OuterBox = GetComponentsBoundingBox().GetSize() * 0.5 + 50; //Will capture the tiles adjacent to the building
+	auto OuterBox = GetComponentsBoundingBox().GetSize() * 0.2 + 50; //Will capture the tiles adjacent to the building
 	TArray<FHitResult> InnerBoxHits;
 	TArray<FHitResult> OuterBoxHits;
 	UKismetSystemLibrary::BoxTraceMulti(GetWorld(), GetActorLocation(), GetActorLocation() + GetActorUpVector() * -100, InnerBox, GetActorRotation(), UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::Persistent, InnerBoxHits, true, FColor::Yellow);
-	UKismetSystemLibrary::BoxTraceMulti(GetWorld(), GetActorLocation(), GetActorLocation() + GetActorUpVector() * -100, OuterBox, GetActorRotation(), UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::Persistent, OuterBoxHits, true, FColor::Orange);
+	if(Mesh->GetRelativeRotation().Yaw == 0) // Is mesh not rotated? Then this is the correct TraceCast
+	{
+		UKismetSystemLibrary::BoxTraceMulti(GetWorld(), Mesh->GetComponentLocation() + Mesh->GetRightVector() * 100, GetActorLocation() + GetActorUpVector() * -100, OuterBox, GetActorRotation(), UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::Persistent, OuterBoxHits, true, FColor::Orange);
+	}
+	else// Is mesh rotated? Then this is the correct TraceCast
+	{
+		UKismetSystemLibrary::BoxTraceMulti(GetWorld(), Mesh->GetComponentLocation() + Mesh->GetForwardVector() * -100, GetActorLocation() + GetActorUpVector() * -100, OuterBox, GetActorRotation(), UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::Persistent, OuterBoxHits, true, FColor::Orange);
 
+	}
 	for (auto HitByInner : InnerBoxHits) // Adds Tiles hit by InnerBox to an Array.
 	{
 		auto CurrentTile = Cast<ABaseTile>(HitByInner.Actor);
@@ -70,11 +81,21 @@ void ABaseBuilding::SpawnUnit()
 	else // There is a free tile! Spawn Unit. Reset Index.
 	{
 		ABaseUnit* NewUnit = Cast<ABaseUnit>(GetWorld()->SpawnActor(SpawnableUnit));
-		NewUnit->SetActorLocation(AdjacentTiles[index]->GetActorLocation());
-		NewUnit->SetActorRotation(GetActorForwardVector().ToOrientationRotator());
-		NewUnit->teamBlue = TeamBlue;
-		NewUnit->UpdateMaterial();
-		NewUnit->CenterOnTile();
+		if((TeamBlue && GameMode->DivineValueBlue >= NewUnit->CostToSpawn) || (!TeamBlue && GameMode->DivineValueRed >= NewUnit->CostToSpawn)) // Make sure player can afford to spawn new unit
+		{
+			NewUnit->SetActorLocation(AdjacentTiles[index]->GetActorLocation());
+			NewUnit->SetActorRotation(GetActorForwardVector().ToOrientationRotator());
+			NewUnit->teamBlue = TeamBlue;
+			NewUnit->UpdateMaterial();
+			NewUnit->CenterOnTile();
+			if(TeamBlue) GameMode->DivineValueBlue -= NewUnit->CostToSpawn;
+			else GameMode->DivineValueRed -= NewUnit->CostToSpawn;	
+		}
+		else // player does not have enough resource
+		{
+			NewUnit->Destroy();
+			UE_LOG(LogTemp, Warning, TEXT("Not Enough Recource To Spawn Unit"));
+		}
 		index = 0;
 	}
 }
