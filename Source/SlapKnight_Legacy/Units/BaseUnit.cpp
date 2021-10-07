@@ -20,7 +20,7 @@ ABaseUnit::ABaseUnit() // Creates a root and a skeletal mesh.
 void ABaseUnit::BeginPlay() // Sets this Units basic stats to the max, gives it the correct color and sets it on the tile below.
 {
 	Super::BeginPlay();
-	CurrentStamina = StaminaMax;
+	//CurrentStamina = StaminaMax;
 	CurrentHealth = HealthMax;
 	IgnoreList.Add(this);
 	CenterOnTile();
@@ -53,7 +53,7 @@ void ABaseUnit::Die() // The unit dies.
 {
 	FHitResult Hit;
 	UKismetSystemLibrary::LineTraceSingle(GetWorld(), GetActorLocation(), GetActorLocation() + GetActorUpVector() * -50, UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::ForOneFrame, Hit, true);
-	if (Hit.bBlockingHit) //If RayCast hit, Set Unit position to TargetToMove
+	if (Hit.bBlockingHit)
 	{
 		auto CurrentTile = Cast<ABaseTile>(Hit.Actor);
 		CurrentTile->CurrentUnit = nullptr; 

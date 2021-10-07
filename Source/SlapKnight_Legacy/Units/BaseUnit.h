@@ -18,18 +18,21 @@ public:
 	ABaseUnit();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	int CurrentHealth;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	int CurrentStamina;
+	int CostToSpawn = 25;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool teamBlue;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int StaminaMax = 30;
-
+	UPROPERTY(BlueprintReadWrite)
+	int CurrentHealth;
+	UPROPERTY(BlueprintReadWrite)
+	int CurrentStamina;
+	
 	UFUNCTION(BlueprintCallable)
 	void NewRoundReset();
+
 	void Die();
 	void ReciveDamage(int damage);
 	void CenterOnTile();

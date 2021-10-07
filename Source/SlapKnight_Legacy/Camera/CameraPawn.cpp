@@ -83,12 +83,12 @@ void ACameraPawn::LeftClick()
 {
 	FHitResult UnderMouse;
 	gameMode->GetPlayerController()->GetHitResultUnderCursor(ECC_WorldDynamic, false, UnderMouse);
-	if(UnderMouse.bBlockingHit && UnderMouse.Actor->IsA(ABaseBuilding::StaticClass()))
+	if(UnderMouse.bBlockingHit && UnderMouse.Actor->IsA(ABaseBuilding::StaticClass())) // Are we clicking a Building?
 	{
 		auto HitBuilding = Cast<ABaseBuilding>(UnderMouse.Actor);
-		if(HitBuilding->TeamBlue == gameMode->teamBlue)
+		if(HitBuilding->TeamBlue == gameMode->teamBlue) // Is the Building on our team?
 		{
-			HitBuilding->SpawnUnit();
+			HitBuilding->SpawnUnit(); //Spawn Unit
 		}
 	}
 	
