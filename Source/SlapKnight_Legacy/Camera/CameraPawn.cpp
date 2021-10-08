@@ -103,7 +103,7 @@ void ACameraPawn::LeftClick()
 		SetAsCurrentSelectedTile(HitTile);
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("Tile is not selectable"));
+		UE_LOG(LogTemp, Log, TEXT("Clicked Non-Valid Target"));
 	}
 }
 

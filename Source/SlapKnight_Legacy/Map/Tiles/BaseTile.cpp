@@ -20,7 +20,7 @@ ABaseTile::ABaseTile() // Creates the root, the targetToMove that is the positio
 	HighlightedPlaneGreen->SetupAttachment(RootComponent);
 	HighlightedPlaneYellow->SetupAttachment(RootComponent);
 	TargetToMove = CreateDefaultSubobject<USceneComponent>(TEXT("TargetToMove"));
-	TargetToMove->SetupAttachment(RootComponent);
+	//TargetToMove->SetupAttachment(RootComponent);
 }
 
 void ABaseTile::BeginPlay() // Finds neighbours and game mode for future reference.
@@ -62,12 +62,6 @@ void ABaseTile::RiseTile(int offset)
 {
 	FVector risenPos = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + offset);
 	SetActorLocation(risenPos);
-	if (CurrentUnit)
-	{
-		FVector risenPos2 = FVector(CurrentUnit->GetActorLocation().X, CurrentUnit->GetActorLocation().Y, CurrentUnit->GetActorLocation().Z + offset);
-		CurrentUnit->SetActorLocation(risenPos2);
-	}
-
 }
 
 void ABaseTile::SelectTile() // If this tile has a unit on top then it becomes selected, highlighted and becomes the currentTile of the gameMode.

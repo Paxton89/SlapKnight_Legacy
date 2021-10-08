@@ -83,11 +83,12 @@ void ABaseBuilding::SpawnUnit()
 		ABaseUnit* NewUnit = Cast<ABaseUnit>(GetWorld()->SpawnActor(SpawnableUnit));
 		if((TeamBlue && GameMode->DivineValueBlue >= NewUnit->CostToSpawn) || (!TeamBlue && GameMode->DivineValueRed >= NewUnit->CostToSpawn)) // Make sure player can afford to spawn new unit
 		{
-			NewUnit->SetActorLocation(AdjacentTiles[index]->GetActorLocation());
+			NewUnit->SetActorLocation(AdjacentTiles[index]->TargetToMove->GetComponentLocation());
 			NewUnit->SetActorRotation(GetActorForwardVector().ToOrientationRotator());
 			NewUnit->teamBlue = TeamBlue;
 			NewUnit->UpdateMaterial();
 			NewUnit->CenterOnTile();
+			NewUnit->DefaultRotation = NewUnit->GetActorRotation();
 			if(TeamBlue) GameMode->DivineValueBlue -= NewUnit->CostToSpawn;
 			else GameMode->DivineValueRed -= NewUnit->CostToSpawn;	
 		}

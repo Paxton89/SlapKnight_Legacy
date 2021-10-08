@@ -29,6 +29,8 @@ public:
 	int CurrentHealth;
 	UPROPERTY(BlueprintReadWrite)
 	int CurrentStamina;
+
+	FRotator DefaultRotation;
 	
 	UFUNCTION(BlueprintCallable)
 	void NewRoundReset();
@@ -47,6 +49,16 @@ protected:
 	USceneComponent* Root;
 	UPROPERTY(EditAnywhere)
 	USkeletalMeshComponent* SkeletalMesh;
+	UPROPERTY(EditAnywhere)
+	USkeletalMeshComponent* HeadMesh;
+	UPROPERTY(EditAnywhere)
+	UAnimSequence* Anim_Idle;
+	UPROPERTY(EditAnywhere)
+	UAnimSequence* Anim_Walk;
+
+
+
+	
 	UPROPERTY(EditAnywhere)
 	UMaterialInstance* Mat_BlueTeam;
 	UPROPERTY(EditAnywhere)
