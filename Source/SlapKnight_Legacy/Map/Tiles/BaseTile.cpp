@@ -20,7 +20,7 @@ ABaseTile::ABaseTile() // Creates the root, the targetToMove that is the positio
 	HighlightedPlaneGreen->SetupAttachment(RootComponent);
 	HighlightedPlaneYellow->SetupAttachment(RootComponent);
 	TargetToMove = CreateDefaultSubobject<USceneComponent>(TEXT("TargetToMove"));
-	//TargetToMove->SetupAttachment(RootComponent);
+	TargetToMove->SetupAttachment(RootComponent);
 }
 
 void ABaseTile::BeginPlay() // Finds neighbours and game mode for future reference.
