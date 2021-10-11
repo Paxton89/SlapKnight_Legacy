@@ -84,6 +84,7 @@ void ABaseUnit::CenterOnTile() // Finds a tile underneath to move to and ocuppy.
 		SkeletalMesh->PlayAnimation(Anim_Idle, true);
 		HeadMesh->SetPlayRate(0.5f);
 		HeadMesh->PlayAnimation(Anim_Idle, true);
+		UE_LOG(LogTemp, Log, TEXT("CENTERED"));
 	}
 }
 
@@ -108,10 +109,7 @@ void ABaseUnit::Move() // This lerps the current direction to the desired positi
 		FHitResult Hit;
 		UKismetSystemLibrary::LineTraceSingle(GetWorld(), GetActorLocation(), GetActorLocation() + GetActorUpVector() * -100, UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::ForOneFrame, Hit, true);
 		if(Hit.bBlockingHit) TargetLocation = Cast<ABaseTile>(Hit.Actor)->TargetToMove->GetComponentLocation();
-		SkeletalMesh->SetPlayRate(0.5f);
-		SkeletalMesh->PlayAnimation(Anim_Idle, true);
-		HeadMesh->SetPlayRate(0.5f);
-		HeadMesh->PlayAnimation(Anim_Idle, true);
+		CenterOnTile();
 		SetActorRotation(DefaultRotation);
 	}
 }
