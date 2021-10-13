@@ -12,13 +12,8 @@ ABaseTile::ABaseTile() // Creates the root, the targetToMove that is the positio
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetCollisionProfileName("BlockAllDynamic");
 	RootComponent = Mesh;
-	//Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
-	//Box->SetupAttachment(RootComponent);
-	//Box->SetCollisionProfileName("BlockAllDynamic");
-	HighlightedPlaneGreen = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("highlightGreen"));
-	HighlightedPlaneYellow = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("highlightYellow"));
-	HighlightedPlaneGreen->SetupAttachment(RootComponent);
-	HighlightedPlaneYellow->SetupAttachment(RootComponent);
+	HighlightPlane = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("highlight"));
+	HighlightPlane->SetupAttachment(RootComponent);
 	TargetToMove = CreateDefaultSubobject<USceneComponent>(TEXT("TargetToMove"));
 	TargetToMove->SetupAttachment(RootComponent);
 }
@@ -28,6 +23,7 @@ void ABaseTile::BeginPlay() // Finds neighbours and game mode for future referen
 	Super::BeginPlay();
 	gameMode = Cast<ASlapKnight_LegacyGameModeBase>(GetWorld()->GetAuthGameMode());
 	UpdateNeighbours();
+	ChangeHighlightToGreen();
 }
 
 void ABaseTile::Tick(float DeltaTime) // Currently empty, good :D.
@@ -45,7 +41,8 @@ void ABaseTile::IsLegalTile(bool legal) // Sets this tiles variables as legal or
 {
 	affordable = legal;
 	legalTile = legal;
-	HighlightedPlaneGreen->SetVisibility(legal);
+	if(HighlightPlane != nullptr)
+		HighlightPlane->SetVisibility(legal);
 }
 
 bool ABaseTile::GetUnitTeam() // Returns the team of the unit standing on this tile.
@@ -67,29 +64,35 @@ void ABaseTile::RiseTile(int offset)
 void ABaseTile::SelectTile() // If this tile has a unit on top then it becomes selected, highlighted and becomes the currentTile of the gameMode.
 {
 	//if (CurrentUnit && Cast<ABaseUnit>(CurrentUnit)->teamBlue == gameMode->teamBlue)
-	if (CurrentUnit )
+	if (CurrentUnit)
 	{
 		if (Cast<ABaseUnit>(CurrentUnit)->teamBlue == gameMode->teamBlue)
 		{
-			HighlightedPlaneYellow->SetVisibility(true);
+			if (HighlightPlane != nullptr)
+				HighlightPlane->SetVisibility(true);
 			gameMode->currentTile = TileId;
 			selected = true;
 			ActivateNeighbours(true);
 		}
 		else
 		{
-			HighlightedPlaneYellow->SetVisibility(true);
+			if (HighlightPlane != nullptr)
+				HighlightPlane->SetVisibility(true);
+			
 			gameMode->currentTile = TileId;
 			selected = true;
 		}
 
+		ChangeHighlightToYellow();
 	}
 }
 
 void ABaseTile::DeSelectTile() // Sets this tiles variables as deselected.
 {
-	HighlightedPlaneYellow->SetVisibility(false);
+	if (HighlightPlane != nullptr)
+		HighlightPlane->SetVisibility(false);
 	selected = false;
+	ChangeHighlightToGreen();
 	ActivateNeighbours(false);
 }
 
@@ -113,11 +116,19 @@ void ABaseTile::ActivateNeighbours(bool activate)// This activates or deactivate
 	{
 		
 		Tile(tile)->activated = activate;
-		Tile(tile)->HighlightedPlaneGreen->SetVisibility(activate);
+
+		if (Tile(tile)->HighlightPlane != nullptr)
+			Tile(tile)->HighlightPlane->SetVisibility(activate);
 		if (activate)
+		{
+			ChangeHighlightToGreen();
 			Tile(tile)->EstablishTileLegality();
+		}
 		else
+		{
 			Tile(tile)->IsLegalTile(false);
+		}
+
 	}
 }
 

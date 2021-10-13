@@ -24,23 +24,30 @@ public:
 	void IsLegalTile(bool legal);
 	bool GetUnitTeam();
 	void SelectTile();
-	UFUNCTION(BlueprintCallable)
-	void DeSelectTile();
 	void UpdateNeighbours();
 	void ActivateNeighbours(bool activate);
 	int GetUnitStamina();
 	ABaseTile* Tile(int TileId);
 	void RiseTile(int offset);
+	UFUNCTION(BlueprintCallable)
+	void DeSelectTile();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ChangeHighlightToRed();
+	UFUNCTION(BlueprintImplementableEvent)
+	void ChangeHighlightToGreen();
+	UFUNCTION(BlueprintImplementableEvent)
+	void ChangeHighlightToYellow();
 
 	int TileId;
 	int costToMove = 10;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool selected;
 	bool activated;
 	bool affordable;
 	bool legalTile;
 	bool dificultTerrain;
 	bool hovered;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool selected;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	ABaseUnit* CurrentUnit;
@@ -63,10 +70,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* Box;
 
-	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* HighlightedPlaneGreen;
-	
-	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* HighlightedPlaneYellow;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UStaticMeshComponent* HighlightPlane;
 
 };
