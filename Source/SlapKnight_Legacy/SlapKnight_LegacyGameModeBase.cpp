@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "SlapKnight_LegacyGameModeBase.h"
+
+#include "Camera/CameraPawn.h"
 #include "Kismet/GameplayStatics.h"
 #include "Map/Tiles/BaseTile.h"
 #include "Map/Tiles/TileManager.h"
@@ -24,11 +26,17 @@ void ASlapKnight_LegacyGameModeBase::BeginPlay() // This makes a list of all all
 	}
 	playerController = GetWorld()->GetFirstPlayerController();
 	playerController->bShowMouseCursor = true;
+	CameraPawn = Cast<ACameraPawn>(UGameplayStatics::GetActorOfClass(GetWorld() ,ACameraPawn::StaticClass()));
 }
 
 APlayerController* ASlapKnight_LegacyGameModeBase::GetPlayerController()
 {
 	return playerController;
+}
+
+ACameraPawn* ASlapKnight_LegacyGameModeBase::GetCameraPawn()
+{
+	return CameraPawn;
 }
 
 
