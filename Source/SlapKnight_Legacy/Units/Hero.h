@@ -18,12 +18,23 @@ class SLAPKNIGHT_LEGACY_API AHero : public APawn
 public: //Functions
 	AHero();
 	void MoveForward(float Value);
+	void MoveRight(float Value);
+	void PlayWalkAnimation(float Value);
+	void PlayIdleAnimation();
 	void LeftClick();
-	void Rotate(float Value);
+	void Rotate();
 	
-	USceneComponent* GetCameraSceneComponent(); 
-public:	//Variables
+	USceneComponent* GetCameraSceneComponent();
 
+	
+	UPROPERTY(EditAnywhere)
+	float MoveSpeed;
+
+	bool bIdle = true;
+	bool bWalking = false;
+	bool bLockedIn = false;
+	float MouseRoll;
+	float MouseYaw;
 	
 protected:
 		//Functions 
@@ -45,9 +56,13 @@ protected:
 	UAnimSequence* Anim_Idle;
 	UPROPERTY(EditAnywhere)
 	UAnimSequence* Anim_Walk;
+	UPROPERTY(EditAnywhere)
+	UAnimSequence* Anim_Attack;
 
 	ASlapKnight_LegacyGameModeBase* GameMode;
 	ACameraPawn* CameraPawn;
+	float ForwardMovement;
+	float RightMovement;
 
 	
 };

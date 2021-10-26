@@ -25,7 +25,7 @@ void ASlapKnight_LegacyGameModeBase::BeginPlay() // This makes a list of all all
 		Cast<ABaseTile>(tile)->TileId = allTiles.Num() - 1;
 	}
 	playerController = GetWorld()->GetFirstPlayerController();
-	playerController->bShowMouseCursor = true;
+	//playerController->bShowMouseCursor = true;
 	CameraPawn = Cast<ACameraPawn>(UGameplayStatics::GetActorOfClass(GetWorld() ,ACameraPawn::StaticClass()));
 }
 
