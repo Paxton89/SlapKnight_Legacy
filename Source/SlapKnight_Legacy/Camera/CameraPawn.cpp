@@ -1,19 +1,21 @@
 #include "SlapKnight_Legacy/Camera/CameraPawn.h"
+
 #include "Components/SceneComponent.h"
 #include "Camera/CameraComponent.h"
 #include "../Units/BaseUnit.h"
 #include "../SlapKnight_LegacyGameModeBase.h"
-#include "Kismet/KismetSystemLibrary.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "SlapKnight_Legacy/Buildings/BaseBuilding.h"
 #include "SlapKnight_Legacy/Map/Tiles/BaseTile.h"
-#include "SlapKnight_Legacy/Map/Tiles/TileManager.h"
-#include "SlapKnight_Legacy/Units/BaseUnit.h"
+#include "SlapKnight_Legacy/Units/Hero.h"
 
 ACameraPawn::ACameraPawn() // Establish root.
 {
 	PrimaryActorTick.bCanEverTick = true;
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;
+
 }
 
 void ACameraPawn::BeginPlay() // Get camera and gamemode for future reference.
@@ -21,44 +23,125 @@ void ACameraPawn::BeginPlay() // Get camera and gamemode for future reference.
 	Super::BeginPlay();
 	gameMode = Cast<ASlapKnight_LegacyGameModeBase>(GetWorld()->GetAuthGameMode());
 	MainCam = Cast<UCameraComponent>(GetComponentByClass(UCameraComponent::StaticClass()));
+	SpringArm = Cast<USpringArmComponent>(GetComponentByClass(USpringArmComponent::StaticClass()));
+	HeroUnit = Cast<AHero>(UGameplayStatics::GetActorOfClass(GetWorld(), AHero::StaticClass()));
+	DefaultRot = MainCam->GetComponentQuat();
+	CachedMoveSpeed = MoveSpeed;
 }
 
 void ACameraPawn::Tick(float DeltaTime) // Currently empty, good :D.
 {
 	Super::Tick(DeltaTime);
+	FVector CameraPos = MainCam->GetComponentLocation();
+	FQuat CameraRot = MainCam->GetComponentQuat();
+	FVector TargetPos;
+	FQuat TargetRot;
+	if(bHeroMode && !HeroUnit->bLockedIn) //Camera Changes position to Hero mode
+	{
+			TargetPos = HeroUnit->GetCameraSceneComponent()->GetComponentLocation();
+			TargetRot = HeroUnit->GetCameraSceneComponent()->GetComponentQuat();
+			MainCam->SetWorldLocation(FMath::Lerp(CameraPos, TargetPos, 0.1));
+			MainCam->SetWorldRotation(FMath::Lerp(CameraRot, TargetRot, 0.1));
+			if(FVector::Distance(CameraPos,TargetPos) < 1)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Camera locked in"));
+				HeroUnit->bLockedIn = true;
+			}
+	}
+	else if(bHeroMode && HeroUnit->bLockedIn) // Move CameraPawn with hero unit (For smooth transition to RTS-mode later)
+	{
+		SetActorLocation(HeroUnit->GetActorLocation());
+		SetActorRotation(HeroUnit->GetCameraSceneComponent()->GetComponentRotation());
+		MainCam->SetWorldLocation(HeroUnit->GetCameraSceneComponent()->GetComponentLocation());
+		MainCam->SetWorldRotation(HeroUnit->GetCameraSceneComponent()->GetComponentRotation());
+	}
+	else if(!bHeroMode && !CameraLocked) // Camera moves back into RTS mode
+	{
+
+			auto SocketOffset = SpringArm->SocketOffset;
+			auto ArmLength = SpringArm->TargetArmLength;
+			auto SpringarmLoc = SpringArm->GetComponentLocation();
+			TargetPos = GetActorLocation() + SocketOffset + (GetActorForwardVector() * -ArmLength);
+			TargetRot = FRotator(
+                DefaultRot.Rotator().Pitch,
+                HeroUnit->GetCameraSceneComponent()->GetComponentRotation().Yaw,
+                HeroUnit->GetCameraSceneComponent()->GetComponentRotation().Roll).Quaternion();
+			MainCam->SetWorldLocation(FMath::Lerp(CameraPos, TargetPos, 0.1));
+			MainCam->SetWorldRotation(FMath::Lerp(CameraRot, TargetRot, 0.1));
+			if(FVector::Distance(CameraPos,TargetPos) < 1)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Camera locked in"));
+				CameraLocked = true;
+		}
+	}
 }
 
 void ACameraPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent->BindAxis("MoveForward", this, &ACameraPawn::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &ACameraPawn::MoveRight);
-	PlayerInputComponent->BindAxis("Rotate", this, &ACameraPawn::Rotate);
-	PlayerInputComponent->BindAxis("MouseMoved", this, &ACameraPawn::MouseHoverOverTile);
-	PlayerInputComponent->BindAction("LeftClick", IE_Pressed, this, &ACameraPawn::LeftClick);
+
+		PlayerInputComponent->BindAxis("MoveForward", this, &ACameraPawn::MoveForward);
+		PlayerInputComponent->BindAxis("MoveRight", this, &ACameraPawn::MoveRight);
+		PlayerInputComponent->BindAxis("Rotate", this, &ACameraPawn::Rotate);
+		PlayerInputComponent->BindAxis("MouseMoved", this, &ACameraPawn::MouseHoverOverTile);
+		PlayerInputComponent->BindAxis("MouseYaw", this, &ACameraPawn::HeroLookRight);
+		PlayerInputComponent->BindAxis("MousePitch", this, &ACameraPawn::HeroLookUp);
+		PlayerInputComponent->BindAction("LeftClick", IE_Pressed, this, &ACameraPawn::LeftClick);	
+		PlayerInputComponent->BindAction("CameraModeChange", IE_Pressed, this, &ACameraPawn::ChangeCameraMode);
 }
 
-void ACameraPawn::MoveForward(float Value) // Move the camera.
+void ACameraPawn::MoveForward(float Value)
 {
-	MoveY = Value;
-	AddActorLocalOffset(FVector(MoveX, MoveY, 0) * MoveSpeed);
+	if(!bHeroMode) //Move Camera RTS-mode
+	{
+		CamForward = Value;
+		AddActorLocalOffset(FVector(CamForward,0, 0) * MoveSpeed);	
+	}
+	
+	if(bHeroMode && HeroUnit->bLockedIn) // Hero-Mode
+	{
+		HeroUnit->MoveForward(Value);
+	}
 }
 
 void ACameraPawn::MoveRight(float Value) // Move the camera.
 {
-	MoveX = Value;
-	AddActorLocalOffset(FVector(MoveX, MoveY, 0) * MoveSpeed);
+	if(!bHeroMode) //RTS-Mode
+	{
+		CamRight = -Value;
+		AddActorLocalOffset(FVector(0, CamRight, 0) * MoveSpeed);	
+	}
+	
+	if(bHeroMode && HeroUnit->bLockedIn) // Hero-Mode
+	{
+		HeroUnit->MoveRight(Value);	
+	}
 }
 
+void ACameraPawn::HeroLookRight(float Value)
+{
+	if (!bHeroMode || !HeroUnit->bLockedIn) return;
+	HeroUnit->MouseYaw = Value;
+}
+
+void ACameraPawn::HeroLookUp(float Value)
+{
+	if (!bHeroMode || !HeroUnit->bLockedIn) return;
+	HeroUnit->MouseRoll = Value;
+}
 void ACameraPawn::Rotate(float Value) // Rotate the camera.
 {
+	if(bHeroMode) return;
+	
 	FRotator NewRotation = FRotator(0, Value*2 , 0);
 	FQuat QuatRotation = FQuat(NewRotation);
-	AddActorLocalRotation(QuatRotation, false, 0, ETeleportType::None);
+	AddActorWorldRotation(QuatRotation, false, 0, ETeleportType::None);	
 }
 
 void ACameraPawn::MouseHoverOverTile(float Value) // Only when the mouse moves, a raycast gets the tile under the mouse and activates the hovering info method.
 {
+	if(bHeroMode) return;
+	
 	FHitResult hit;
 	gameMode->GetPlayerController()->GetHitResultUnderCursor(ECC_WorldDynamic, false, hit);
 	if (hit.Actor != nullptr && hit.Actor->IsA(ABaseTile::StaticClass()) )
@@ -81,6 +164,12 @@ void ACameraPawn::MouseHoverOverTile(float Value) // Only when the mouse moves, 
 
 void ACameraPawn::LeftClick() 
 {
+	if(bHeroMode && HeroUnit->bLockedIn)
+	{
+		HeroUnit->LeftClick();
+		return;
+	}
+	
 	FHitResult UnderMouse;
 	gameMode->GetPlayerController()->GetHitResultUnderCursor(ECC_WorldDynamic, false, UnderMouse);
 	if(UnderMouse.bBlockingHit && UnderMouse.Actor->IsA(ABaseBuilding::StaticClass())) // Are we clicking a Building?
@@ -104,6 +193,23 @@ void ACameraPawn::LeftClick()
 	else
 	{
 		UE_LOG(LogTemp, Log, TEXT("Clicked Non-Valid Target"));
+	}
+}
+
+void ACameraPawn::ChangeCameraMode()
+{
+	bHeroMode = !bHeroMode;
+	CameraLocked = false;
+	HeroUnit->bLockedIn = false;
+	if(bHeroMode)
+	{
+		MoveSpeed = HeroUnit->MoveSpeed;	
+	}
+	
+	if(!bHeroMode)
+	{
+		MoveSpeed = CachedMoveSpeed;
+		SetActorLocation(HeroUnit->GetActorLocation());
 	}
 }
 
