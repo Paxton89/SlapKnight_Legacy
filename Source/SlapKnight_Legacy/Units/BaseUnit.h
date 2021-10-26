@@ -45,12 +45,15 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	//
 	UPROPERTY(EditAnywhere)
 	USceneComponent* Root;
 	UPROPERTY(EditAnywhere)
 	USkeletalMeshComponent* SkeletalMesh;
 	UPROPERTY(EditAnywhere)
 	USkeletalMeshComponent* HeadMesh;
+
+	//Animation
 	UPROPERTY(EditAnywhere)
 	UAnimSequence* Anim_Idle;
 	UPROPERTY(EditAnywhere)

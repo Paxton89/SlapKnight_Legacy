@@ -110,7 +110,7 @@ void ABaseUnit::Move() // This lerps the current direction to the desired positi
 		UKismetSystemLibrary::LineTraceSingle(GetWorld(), GetActorLocation(), GetActorLocation() + GetActorUpVector() * -100, UEngineTypes::ConvertToTraceType(ECC_WorldDynamic), false, IgnoreList, EDrawDebugTrace::ForOneFrame, Hit, true);
 		if(Hit.bBlockingHit) TargetLocation = Cast<ABaseTile>(Hit.Actor)->TargetToMove->GetComponentLocation();
 		CenterOnTile();
-		SetActorRotation(DefaultRotation);
+		//SetActorRotation(DefaultRotation);
 	}
 }
 

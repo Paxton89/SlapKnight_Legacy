@@ -8,6 +8,7 @@
 
 //class UTileManager;
 class ABaseTile;
+class ACameraPawn;
 UCLASS()
 class SLAPKNIGHT_LEGACY_API ASlapKnight_LegacyGameModeBase : public AGameModeBase
 {
@@ -16,6 +17,7 @@ class SLAPKNIGHT_LEGACY_API ASlapKnight_LegacyGameModeBase : public AGameModeBas
 public:
 
 	APlayerController* GetPlayerController();
+	ACameraPawn* GetCameraPawn();
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int currentTile;
@@ -39,6 +41,8 @@ protected:
 
 	TArray<AActor*> allActorTiles;
 
+	ACameraPawn* CameraPawn;
+	
 	virtual void BeginPlay() override;
 
 };
