@@ -27,7 +27,7 @@ public:
 	int DivineValueRed = 50;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool teamBlue;
+	bool TeamBlue;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<ABaseTile*> allTiles;

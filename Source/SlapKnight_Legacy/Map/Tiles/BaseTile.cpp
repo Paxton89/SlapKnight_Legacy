@@ -21,7 +21,7 @@ ABaseTile::ABaseTile() // Creates the root, the targetToMove that is the positio
 void ABaseTile::BeginPlay() // Finds neighbours and game mode for future reference.
 {
 	Super::BeginPlay();
-	gameMode = Cast<ASlapKnight_LegacyGameModeBase>(GetWorld()->GetAuthGameMode());
+	GameMode = Cast<ASlapKnight_LegacyGameModeBase>(GetWorld()->GetAuthGameMode());
 	UpdateNeighbours();
 	ChangeHighlightToGreen();
 }
@@ -33,21 +33,21 @@ void ABaseTile::Tick(float DeltaTime) // Currently empty, good :D.
 
 void ABaseTile::EstablishTileLegality() // Checks if this tile is empty of units and if the current unit can afford to move here, is so, its a legal tile to move to.
 {
-	bool hasEnoughStamina = !CurrentUnit && Tile(gameMode->currentTile)->CurrentUnit->CurrentStamina >= costToMove;
+	bool hasEnoughStamina = !CurrentUnit && Tile(GameMode->currentTile)->CurrentUnit->CurrentStamina >= CostToMove;
 	IsLegalTile(hasEnoughStamina);
 }
 
 void ABaseTile::IsLegalTile(bool legal) // Sets this tiles variables as legal or not legal depending on the boolean.
 {
-	affordable = legal;
-	legalTile = legal;
+	Affordable = legal;
+	LegalTile = legal;
 	if(HighlightPlane != nullptr)
 		HighlightPlane->SetVisibility(legal);
 }
 
 bool ABaseTile::GetUnitTeam() // Returns the team of the unit standing on this tile.
 {
-	return CurrentUnit->teamBlue;
+	return CurrentUnit->TeamBlue;
 }
 
 int ABaseTile::GetUnitStamina() // Returns the stamina of the unit standing on this tile
@@ -66,12 +66,12 @@ void ABaseTile::SelectTile() // If this tile has a unit on top then it becomes s
 	//if (CurrentUnit && Cast<ABaseUnit>(CurrentUnit)->teamBlue == gameMode->teamBlue)
 	if (CurrentUnit)
 	{
-		if (Cast<ABaseUnit>(CurrentUnit)->teamBlue == gameMode->teamBlue)
+		if (Cast<ABaseUnit>(CurrentUnit)->teamBlue == GameMode->TeamBlue)
 		{
 			if (HighlightPlane != nullptr)
 				HighlightPlane->SetVisibility(true);
-			gameMode->currentTile = TileId;
-			selected = true;
+			GameMode->currentTile = TileId;
+			Selected = true;
 			ActivateNeighbours(true);
 		}
 		else
@@ -79,8 +79,8 @@ void ABaseTile::SelectTile() // If this tile has a unit on top then it becomes s
 			if (HighlightPlane != nullptr)
 				HighlightPlane->SetVisibility(true);
 			
-			gameMode->currentTile = TileId;
-			selected = true;
+			GameMode->currentTile = TileId;
+			Selected = true;
 		}
 
 		ChangeHighlightToYellow();
@@ -91,31 +91,31 @@ void ABaseTile::DeSelectTile() // Sets this tiles variables as deselected.
 {
 	if (HighlightPlane != nullptr)
 		HighlightPlane->SetVisibility(false);
-	selected = false;
+	Selected = false;
 	ChangeHighlightToGreen();
 	ActivateNeighbours(false);
 }
 
 void ABaseTile::UpdateNeighbours() // Makes an array of the 4 neighbouring tiles
 {
-	neighbours.Empty();
-	for (ABaseTile* tile : gameMode->allTiles)
+	Neighbours.Empty();
+	for (ABaseTile* tile : GameMode->allTiles)
 	{
-		bool leftTile = tile->pos.X == pos.X - 1 && tile->pos.Y == pos.Y;
-		bool rightTile = tile->pos.X == pos.X + 1 && tile->pos.Y == pos.Y;
-		bool upTile = tile->pos.X == pos.X && tile->pos.Y == pos.Y + 1;
-		bool downTile = tile->pos.X == pos.X && tile->pos.Y == pos.Y - 1;
+		bool leftTile = tile->Pos.X == Pos.X - 1 && tile->Pos.Y == Pos.Y;
+		bool rightTile = tile->Pos.X == Pos.X + 1 && tile->Pos.Y == Pos.Y;
+		bool upTile = tile->Pos.X == Pos.X && tile->Pos.Y == Pos.Y + 1;
+		bool downTile = tile->Pos.X == Pos.X && tile->Pos.Y == Pos.Y - 1;
 		if ( upTile || downTile || rightTile || leftTile)
-			neighbours.Add(tile->TileId);
+			Neighbours.Add(tile->TileId);
 	}
 }
 
 void ABaseTile::ActivateNeighbours(bool activate)// This activates or deactivates neighbouring tiles, also deals with their highlight.
 {
-	for (int tile : neighbours)
+	for (int tile : Neighbours)
 	{
 		
-		Tile(tile)->activated = activate;
+		Tile(tile)->Activated = activate;
 
 		if (Tile(tile)->HighlightPlane != nullptr)
 			Tile(tile)->HighlightPlane->SetVisibility(activate);
@@ -135,6 +135,6 @@ void ABaseTile::ActivateNeighbours(bool activate)// This activates or deactivate
 
 ABaseTile* ABaseTile::Tile(int Tile)
 {
-	return gameMode->allTiles[Tile];
+	return GameMode->allTiles[Tile];
 }
 

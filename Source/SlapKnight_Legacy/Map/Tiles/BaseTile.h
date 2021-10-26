@@ -20,6 +20,7 @@ public:
 	ABaseTile();
 	virtual void Tick(float DeltaTime) override;
 
+	
 	void EstablishTileLegality();
 	void IsLegalTile(bool legal);
 	bool GetUnitTeam();
@@ -39,20 +40,28 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ChangeHighlightToYellow();
 
+	//for pathfinding
 	int TileId;
-	int costToMove = 10;
-	bool activated;
-	bool affordable;
-	bool legalTile;
-	bool dificultTerrain;
-	bool hovered;
+	bool Blocked;
+	int Parent = -1; //-1 is no parent
+	int H;
+	int G;
+	int F;
+	bool DificultTerrain;
+	int DostToMove = 10;
+	//for pathfinding
+
+	bool Activated;
+	bool Affordable;
+	bool LegalTile;
+	bool Hovered;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool selected;
+	bool Selected;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	ABaseUnit* CurrentUnit;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FVector pos;
+	FVector Pos;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	USceneComponent* TargetToMove;
 
@@ -60,9 +69,9 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	TArray<int> neighbours;
+	TArray<int> Neighbours;
 
-	ASlapKnight_LegacyGameModeBase* gameMode;
+	ASlapKnight_LegacyGameModeBase* GameMode;
 	
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* Mesh;

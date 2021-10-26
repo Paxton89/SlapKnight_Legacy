@@ -22,7 +22,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int CostToSpawn = 25;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool teamBlue;
+	bool TeamBlue;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int StaminaMax = 30;
 	UPROPERTY(BlueprintReadWrite)
