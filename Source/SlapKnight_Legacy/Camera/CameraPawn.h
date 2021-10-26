@@ -50,7 +50,7 @@ public:
 	FVector DefaultPos;
 	FQuat DefaultRot;
 
-	ASlapKnight_LegacyGameModeBase* gameMode;
+	ASlapKnight_LegacyGameModeBase* GameMode;
 	TArray<AActor*> IgnoreList;
 	TArray<int> PairedList;
 	TArray<int> neighbours;

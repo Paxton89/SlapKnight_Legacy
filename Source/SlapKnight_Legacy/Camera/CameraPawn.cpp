@@ -18,10 +18,10 @@ ACameraPawn::ACameraPawn() // Establish root.
 
 }
 
-void ACameraPawn::BeginPlay() // Get camera and gamemode for future reference.
+void ACameraPawn::BeginPlay() // Get camera and GameMode for future reference.
 {
 	Super::BeginPlay();
-	gameMode = Cast<ASlapKnight_LegacyGameModeBase>(GetWorld()->GetAuthGameMode());
+	GameMode = Cast<ASlapKnight_LegacyGameModeBase>(GetWorld()->GetAuthGameMode());
 	MainCam = Cast<UCameraComponent>(GetComponentByClass(UCameraComponent::StaticClass()));
 	SpringArm = Cast<USpringArmComponent>(GetComponentByClass(USpringArmComponent::StaticClass()));
 	HeroUnit = Cast<AHero>(UGameplayStatics::GetActorOfClass(GetWorld(), AHero::StaticClass()));
@@ -143,7 +143,7 @@ void ACameraPawn::MouseHoverOverTile(float Value) // Only when the mouse moves, 
 	if(bHeroMode) return;
 	
 	FHitResult hit;
-	gameMode->GetPlayerController()->GetHitResultUnderCursor(ECC_WorldDynamic, false, hit);
+	GameMode->GetPlayerController()->GetHitResultUnderCursor(ECC_WorldDynamic, false, hit);
 	if (hit.Actor != nullptr && hit.Actor->IsA(ABaseTile::StaticClass()) )
 	{
 
@@ -171,24 +171,24 @@ void ACameraPawn::LeftClick()
 	}
 	
 	FHitResult UnderMouse;
-	gameMode->GetPlayerController()->GetHitResultUnderCursor(ECC_WorldDynamic, false, UnderMouse);
+	GameMode->GetPlayerController()->GetHitResultUnderCursor(ECC_WorldDynamic, false, UnderMouse);
 	if(UnderMouse.bBlockingHit && UnderMouse.Actor->IsA(ABaseBuilding::StaticClass())) // Are we clicking a Building?
 	{
 		auto HitBuilding = Cast<ABaseBuilding>(UnderMouse.Actor);
-		if(HitBuilding->TeamBlue == gameMode->teamBlue) // Is the Building on our team?
+		if(HitBuilding->TeamBlue == GameMode->TeamBlue) // Is the Building on our team?
 		{
 			HitBuilding->SpawnUnit(); //Spawn Unit
 		}
 	}
 	
-	if ( PairedList.Num() > 0 && Tile(HitTile)->legalTile ) // Checks if a tile is selected and if the new tile is legal to move to, if so it sends the unit to the new tile.
+	if ( PairedList.Num() > 0 && Tile(HitTile)->LegalTile ) // Checks if a tile is selected and if the new tile is legal to move to, if so it sends the unit to the new tile.
 	{
-		SendUnitToThisTile(Tile(gameMode->currentTile)->CurrentUnit, HitTile, gameMode->currentTile);
+		SendUnitToThisTile(Tile(GameMode->CurrentTile)->CurrentUnit, HitTile, GameMode->CurrentTile);
 		return;
 	}
-	if (Tile(gameMode->currentTile) != nullptr) // If a tile is currently selected, it deselects it.
-		Tile(gameMode->currentTile)->DeSelectTile();
-	if (gameMode->allTiles[HitTile] != nullptr && gameMode->allTiles[HitTile]->CurrentUnit != nullptr) // If the clicked tile has a unit, it will select the clicked tile as the new currectly selected tile.
+	if (Tile(GameMode->CurrentTile) != nullptr) // If a tile is currently selected, it deselects it.
+		Tile(GameMode->CurrentTile)->DeSelectTile();
+	if (GameMode->allTiles[HitTile] != nullptr && GameMode->allTiles[HitTile]->CurrentUnit != nullptr) // If the clicked tile has a unit, it will select the clicked tile as the new currectly selected tile.
 		SetAsCurrentSelectedTile(HitTile);
 	else
 	{
@@ -218,7 +218,7 @@ void ACameraPawn::SendUnitToThisTile(ABaseUnit* unit, int newTile, int oldTile)
 	
 	PairedList.Empty(); // Empties List so that a new pair can be selected.
 	unit->SetTargetTile(Tile(newTile)); // Tells the unit to change tiles and move there.
-	unit->CurrentStamina -= Tile(newTile)->costToMove; // Reduces stamina by tile set amount.
+	unit->CurrentStamina -= Tile(newTile)->CostToMove; // Reduces stamina by tile set amount.
 	Tile(newTile)->CurrentUnit = unit; // Adds the unit into the new tile.
 	Tile(oldTile)->CurrentUnit = nullptr; // Removes the unit from the old tile.
 	Tile(oldTile)->DeSelectTile(); // De-selects old tile
@@ -234,6 +234,6 @@ void ACameraPawn::SetAsCurrentSelectedTile(int tile)
 
 ABaseTile* ACameraPawn::Tile(int TileId)
 {
-	return gameMode->allTiles[TileId];
+	return GameMode->allTiles[TileId];
 }
 

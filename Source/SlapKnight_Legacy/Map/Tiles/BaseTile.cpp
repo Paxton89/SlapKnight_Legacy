@@ -33,7 +33,7 @@ void ABaseTile::Tick(float DeltaTime) // Currently empty, good :D.
 
 void ABaseTile::EstablishTileLegality() // Checks if this tile is empty of units and if the current unit can afford to move here, is so, its a legal tile to move to.
 {
-	bool hasEnoughStamina = !CurrentUnit && Tile(GameMode->currentTile)->CurrentUnit->CurrentStamina >= CostToMove;
+	bool hasEnoughStamina = !CurrentUnit && Tile(GameMode->CurrentTile)->CurrentUnit->CurrentStamina >= CostToMove;
 	IsLegalTile(hasEnoughStamina);
 }
 
@@ -66,11 +66,11 @@ void ABaseTile::SelectTile() // If this tile has a unit on top then it becomes s
 	//if (CurrentUnit && Cast<ABaseUnit>(CurrentUnit)->teamBlue == gameMode->teamBlue)
 	if (CurrentUnit)
 	{
-		if (Cast<ABaseUnit>(CurrentUnit)->teamBlue == GameMode->TeamBlue)
+		if (Cast<ABaseUnit>(CurrentUnit)->TeamBlue == GameMode->TeamBlue)
 		{
 			if (HighlightPlane != nullptr)
 				HighlightPlane->SetVisibility(true);
-			GameMode->currentTile = TileId;
+			GameMode->CurrentTile = TileId;
 			Selected = true;
 			ActivateNeighbours(true);
 		}
@@ -79,7 +79,7 @@ void ABaseTile::SelectTile() // If this tile has a unit on top then it becomes s
 			if (HighlightPlane != nullptr)
 				HighlightPlane->SetVisibility(true);
 			
-			GameMode->currentTile = TileId;
+			GameMode->CurrentTile = TileId;
 			Selected = true;
 		}
 

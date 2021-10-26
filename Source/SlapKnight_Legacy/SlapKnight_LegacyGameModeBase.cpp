@@ -19,8 +19,8 @@ void ASlapKnight_LegacyGameModeBase::BeginPlay() // This makes a list of all all
 	{
 		int x = tile->GetActorLocation().X / 100;
 		int y = tile->GetActorLocation().Y / 100;
-		Cast<ABaseTile>(tile)->pos.X = -x;
-		Cast<ABaseTile>(tile)->pos.Y = -y;
+		Cast<ABaseTile>(tile)->Pos.X = -x;
+		Cast<ABaseTile>(tile)->Pos.Y = -y;
 		allTiles.Add(Cast<ABaseTile>(tile));
 		Cast<ABaseTile>(tile)->TileId = allTiles.Num() - 1;
 	}

@@ -20,7 +20,7 @@ public:
 	ACameraPawn* GetCameraPawn();
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	int currentTile;
+	int CurrentTile;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int DivineValueBlue = 50;

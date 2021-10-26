@@ -85,7 +85,7 @@ void ABaseBuilding::SpawnUnit()
 		{
 			NewUnit->SetActorLocation(AdjacentTiles[index]->TargetToMove->GetComponentLocation());
 			NewUnit->SetActorRotation(GetActorForwardVector().ToOrientationRotator());
-			NewUnit->teamBlue = TeamBlue;
+			NewUnit->TeamBlue = TeamBlue;
 			NewUnit->UpdateMaterial();
 			NewUnit->CenterOnTile();
 			NewUnit->DefaultRotation = NewUnit->GetActorRotation();

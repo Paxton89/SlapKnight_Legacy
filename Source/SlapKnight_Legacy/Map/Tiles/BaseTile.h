@@ -48,7 +48,7 @@ public:
 	int G;
 	int F;
 	bool DificultTerrain;
-	int DostToMove = 10;
+	int CostToMove = 10;
 	//for pathfinding
 
 	bool Activated;

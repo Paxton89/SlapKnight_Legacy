@@ -116,7 +116,7 @@ void ABaseUnit::Move() // This lerps the current direction to the desired positi
 
 void ABaseUnit::UpdateMaterial() // Updates the material of the units to the one of its team.
 {
-	if(teamBlue)
+	if(TeamBlue)
 		SkeletalMesh->SetMaterial(0, Mat_BlueTeam);
 	else
 		SkeletalMesh->SetMaterial(0, Mat_RedTeam);
