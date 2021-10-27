@@ -1,5 +1,5 @@
 #include "SlapKnight_Legacy/Camera/CameraPawn.h"
-
+#include "../ActorComponents/AstarBrain.h"
 #include "Components/SceneComponent.h"
 #include "Camera/CameraComponent.h"
 #include "../Units/BaseUnit.h"
@@ -129,6 +129,7 @@ void ACameraPawn::HeroLookUp(float Value)
 	if (!bHeroMode || !HeroUnit->bLockedIn) return;
 	HeroUnit->MouseRoll = Value;
 }
+
 void ACameraPawn::Rotate(float Value) // Rotate the camera.
 {
 	if(bHeroMode) return;
@@ -183,6 +184,7 @@ void ACameraPawn::LeftClick()
 	
 	if ( PairedList.Num() > 0 && Tile(HitTile)->LegalTile ) // Checks if a tile is selected and if the new tile is legal to move to, if so it sends the unit to the new tile.
 	{
+		//GameMode->GetAstarBrain()->SetEndTile(HitTile);
 		SendUnitToThisTile(Tile(GameMode->CurrentTile)->CurrentUnit, HitTile, GameMode->CurrentTile);
 		return;
 	}

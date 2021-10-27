@@ -3,7 +3,7 @@
 #include "../../Units/BaseUnit.h"
 #include "../../SlapKnight_LegacyGameModeBase.h"
 #include "Components/BoxComponent.h"
-#include "SlapKnight_Legacy/Map/Tiles/TileManager.h"
+#include "../../ActorComponents/AstarBrain.h"
 #include "Components/StaticMeshComponent.h"
 
 ABaseTile::ABaseTile() // Creates the root, the targetToMove that is the position where units will move to and it creates 2 planes used for highlighting.
@@ -71,8 +71,11 @@ void ABaseTile::SelectTile() // If this tile has a unit on top then it becomes s
 			if (HighlightPlane != nullptr)
 				HighlightPlane->SetVisibility(true);
 			GameMode->CurrentTile = TileId;
+			GameMode->GetAstarBrain()->SetStartTile(TileId);
 			Selected = true;
 			ActivateNeighbours(true);
+
+			
 		}
 		else
 		{
@@ -95,6 +98,8 @@ void ABaseTile::DeSelectTile() // Sets this tiles variables as deselected.
 	ChangeHighlightToGreen();
 	ActivateNeighbours(false);
 }
+
+
 
 void ABaseTile::UpdateNeighbours() // Makes an array of the 4 neighbouring tiles
 {

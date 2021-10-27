@@ -12,6 +12,8 @@ class ASlapKnight_LegacyGameModeBase;
 class UTileManager;
 class USpringArmComponent;
 class AHero;
+class UAstarBrain;
+
 UCLASS()
 class SLAPKNIGHT_LEGACY_API ACameraPawn : public APawn
 {

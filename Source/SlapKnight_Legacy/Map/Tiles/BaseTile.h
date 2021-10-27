@@ -8,8 +8,8 @@ class UStaticMeshComponent;
 class USceneComponent;
 class ABaseUnit;
 class ASlapKnight_LegacyGameModeBase;
-class UTileManager;
 class UBoxComponent;
+class UAstarBrain;
 
 UCLASS()
 class SLAPKNIGHT_LEGACY_API ABaseTile : public AActor
@@ -33,6 +33,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void DeSelectTile();
 
+
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void ChangeHighlightToRed();
 	UFUNCTION(BlueprintImplementableEvent)
@@ -42,13 +44,13 @@ public:
 
 	//for pathfinding
 	int TileId;
-	bool Blocked;
 	int Parent = -1; //-1 is no parent
 	int H;
 	int G;
 	int F;
 	bool DificultTerrain;
 	int CostToMove = 10;
+	int CombinedCostToMove;
 	//for pathfinding
 
 	bool Activated;
@@ -66,10 +68,10 @@ public:
 	USceneComponent* TargetToMove;
 
 
+	TArray<int> Neighbours;
+
 protected:
 	virtual void BeginPlay() override;
-
-	TArray<int> Neighbours;
 
 	ASlapKnight_LegacyGameModeBase* GameMode;
 	
