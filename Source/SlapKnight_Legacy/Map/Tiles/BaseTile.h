@@ -41,6 +41,8 @@ public:
 	void ChangeHighlightToGreen();
 	UFUNCTION(BlueprintImplementableEvent)
 	void ChangeHighlightToYellow();
+	UFUNCTION(BlueprintImplementableEvent)
+	void ChangeHighlightToBlue();
 
 	//for pathfinding
 	int TileId;
@@ -70,6 +72,10 @@ public:
 
 	TArray<int> Neighbours;
 
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		UStaticMeshComponent* HighlightPlane;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -81,7 +87,5 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* Box;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UStaticMeshComponent* HighlightPlane;
 
 };

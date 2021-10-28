@@ -184,7 +184,7 @@ void ACameraPawn::LeftClick()
 	
 	if ( PairedList.Num() > 0 && Tile(HitTile)->LegalTile ) // Checks if a tile is selected and if the new tile is legal to move to, if so it sends the unit to the new tile.
 	{
-		//GameMode->GetAstarBrain()->SetEndTile(HitTile);
+		
 		SendUnitToThisTile(Tile(GameMode->CurrentTile)->CurrentUnit, HitTile, GameMode->CurrentTile);
 		return;
 	}
@@ -196,6 +196,14 @@ void ACameraPawn::LeftClick()
 	{
 		UE_LOG(LogTemp, Log, TEXT("Clicked Non-Valid Target"));
 	}
+
+	if (Tile(HitTile)->CurrentUnit == nullptr) // Checks if a tile is selected and if the new tile is legal to move to, if so it sends the unit to the new tile.
+	{
+		GameMode->GetAstarBrain()->SetEndTile(HitTile);
+		return;
+	}
+
+
 }
 
 void ACameraPawn::ChangeCameraMode()

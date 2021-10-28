@@ -17,9 +17,7 @@ class SLAPKNIGHT_LEGACY_API UAstarBrain : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
 	UAstarBrain();
-
 
 	UFUNCTION()
 	void UpdateHighlights(TArray<int> finalPath);

@@ -6,6 +6,7 @@
 UAstarBrain::UAstarBrain()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+	GameMode = Cast<ASlapKnight_LegacyGameModeBase>(GetOwner());
 }
 
 void UAstarBrain::SetStartTile(int startTile) // Resets everything, and establishes this tile as the starting tile.
@@ -45,17 +46,30 @@ TArray<int> UAstarBrain::Calculatepath(int startTile, int endTile)
 	CurrentTile = startTile;
 	currentCorrectPath.Add(CurrentTile);
 	UpdateATilesStats(CurrentTile, startTile, endTile);
+	int SafeGuard = 0;
 	//-----------------------------------Calculate Path----------------------------------
 	while (OpenList.Num() > 0)
 	{
+		SafeGuard++;
 		//-------------------------Add Neighbors to Open list----------------------------
-		TArray<int> neighbors = Tile(startTile)->Neighbours;;
+		Tile(CurrentTile)->UpdateNeighbours();
+		TArray<int> neighbors = Tile(CurrentTile)->Neighbours;
 		for (auto tile : neighbors)
 		{
-			if (OpenList.Contains(tile))
+			if (Tile(tile)->Parent == -1)
+			{
+				Tile(tile)->Parent = CurrentTile;
+			
+			
+
+
+			if (OpenList.Contains(tile) || Tile(tile)->CurrentUnit != nullptr)
 				continue;
 			OpenList.AddUnique(tile);
+			Tile(tile)->ChangeHighlightToGreen();
+			Tile(tile)->HighlightPlane->SetVisibility(true);
 			UpdateATilesStats(tile, startTile, endTile);
+			}
 		}
 		//-----------------------Move current to correct list----------------------------
 		OpenList.Remove(CurrentTile);
@@ -64,16 +78,27 @@ TArray<int> UAstarBrain::Calculatepath(int startTile, int endTile)
 		int myF = INT_MAX;
 		for (int i = 0; i < OpenList.Num(); i++)
 		{
+
+			
 			int newF = Tile(OpenList[i])->F;
 			if (newF <= myF)
 			{
 				myF = newF;
 				CurrentTile = OpenList[i];
+				UE_LOG(LogTemp, Warning, TEXT("openList: (%d)"), OpenList[i]);
 			}
 		}
 		currentCorrectPath.Add(CurrentTile);
 		//-----------------------------End of path found---------------------------------
+
+		int x = Tile(CurrentTile)->Pos.X;
+		int y = Tile(CurrentTile)->Pos.Y;
+		UE_LOG(LogTemp, Warning, TEXT("finalPath: (%d,%d)"), x, y);
+		Tile(CurrentTile)->ChangeHighlightToRed();
+		Tile(CurrentTile)->HighlightPlane->SetVisibility(true);
 		if (CurrentTile == endTile)
+			break;
+		if (SafeGuard > 100)
 			break;
 	}
 	//---------------------------------Finishing touches---------------------------------
@@ -151,7 +176,12 @@ void UAstarBrain::UpdateHighlights(TArray<int> finalPath) //makes sure the appro
 {
 	for (auto tile : finalPath)
 	{
-		Tile(tile)->ChangeHighlightToRed();
+		int x = Tile(tile)->Pos.X;
+		int y = Tile(tile)->Pos.Y;
+		UE_LOG(LogTemp, Warning, TEXT("finalPath: (%d,%d)"), x,y);
+		Tile(tile)->ChangeHighlightToBlue();
+		Tile(tile)->HighlightPlane->SetVisibility(true);
+
 	}
 }
 
